@@ -2,13 +2,22 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-import { Card, Board, Column } from '@prisma/client';
+import { Card, Board, Column } from "@prisma/client";
 
 export class BoardsDataSource {
-  async getBoard(id: string): Promise<Board & { columns: (Column & { cards: Card[] })[] } | null> {
+  async getBoard(
+    id: string
+  ): Promise<(Board & { columns: (Column & { cards: Card[] })[] }) | null> {
     return prisma.board.findUnique({
       where: { id },
       include: { columns: { include: { cards: true } } },
+    });
+  }
+
+  async getColumn(id: string): Promise<(Column & { cards: Card[] }) | null> {
+    return prisma.column.findUnique({
+      where: { id },
+      include: { cards: true },
     });
   }
 
@@ -33,19 +42,33 @@ export class BoardsDataSource {
   async createCard(
     columnId: string,
     title: string,
-    description: string,
-    position: number
+    description: string
   ): Promise<Card> {
     if (columnId && title) {
       return prisma.card.create({
-        data: { columnId, title, description, position },
+        data: { columnId, title, description, position: 1 },
       });
     } else {
       throw new Error("Invalid input");
     }
   }
 
-  async moveCard(cardId: string, targetColumnId: string, targetPosition: number) {
+  async createSimpleCard(columnId: string, title: string): Promise<Card> {
+    if (columnId && title) {
+      return prisma.card.create({
+        data: { columnId, title, description: "", position: 1 },
+        include: { column: true },
+      });
+    } else {
+      throw new Error("Invalid input");
+    }
+  }
+
+  async moveCard(
+    cardId: string,
+    targetColumnId: string,
+    targetPosition: number
+  ) {
     return prisma.card.update({
       where: { id: cardId },
       data: {

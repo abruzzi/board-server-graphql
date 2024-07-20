@@ -7,27 +7,30 @@ const mutations: MutationResolvers = {
   },
 
   // @ts-ignore
-  createCard: async (
-    _,
-    { columnId, title, description, position },
-    { dataSources }
-  ) => {
-    return dataSources.boardsAPI.createCard(
-      columnId,
-      title,
-      description,
-      position
-    );
+  createCard: async (_, { columnId, title, description }, { dataSources }) => {
+    return dataSources.boardsAPI.createCard(columnId, title, description);
   },
 
+  // @ts-ignore
+  createSimpleCard: async (_, { columnId, title }, { dataSources }) => {
+    return dataSources.boardsAPI.createSimpleCard(columnId, title);
+  },
   // @ts-ignore
   createColumn: async (_, { boardId, name, position }, { dataSources }) => {
     return dataSources.boardsAPI.createColumn(boardId, name, position);
   },
 
   // @ts-ignore
-  moveCard: async (_, { cardId, targetColumnId, targetPosition }, { dataSources }) => {
-    return dataSources.boardsAPI.moveCard(cardId, targetColumnId, targetPosition);
+  moveCard: async (
+    _,
+    { cardId, targetColumnId, targetPosition },
+    { dataSources }
+  ) => {
+    return dataSources.boardsAPI.moveCard(
+      cardId,
+      targetColumnId,
+      targetPosition
+    );
   },
 };
 

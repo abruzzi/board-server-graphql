@@ -31,7 +31,7 @@ export type Card = {
   title: Scalars['String'];
 };
 
-export type Column = {
+export type Column = Node & {
   __typename?: 'Column';
   board: Board;
   cards: Array<Card>;
@@ -45,6 +45,7 @@ export type Mutation = {
   createBoard: Board;
   createCard: Card;
   createColumn: Column;
+  createSimpleCard: Card;
   moveCard: Card;
 };
 
@@ -57,7 +58,6 @@ export type MutationCreateBoardArgs = {
 export type MutationCreateCardArgs = {
   columnId: Scalars['ID'];
   description: Scalars['String'];
-  position: Scalars['Int'];
   title: Scalars['String'];
 };
 
@@ -69,20 +69,42 @@ export type MutationCreateColumnArgs = {
 };
 
 
+export type MutationCreateSimpleCardArgs = {
+  columnId: Scalars['ID'];
+  title: Scalars['String'];
+};
+
+
 export type MutationMoveCardArgs = {
   cardId: Scalars['ID'];
   targetColumnId: Scalars['ID'];
   targetPosition: Scalars['Int'];
 };
 
+export type Node = {
+  id: Scalars['ID'];
+};
+
 export type Query = {
   __typename?: 'Query';
   board: Board;
   boards: Array<Board>;
+  column: Column;
+  node?: Maybe<Node>;
 };
 
 
 export type QueryBoardArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryColumnArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryNodeArgs = {
   id: Scalars['ID'];
 };
 
@@ -163,6 +185,7 @@ export type ResolversTypes = ResolversObject<{
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   Mutation: ResolverTypeWrapper<{}>;
+  Node: ResolversTypes['Column'];
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']>;
 }>;
@@ -176,6 +199,7 @@ export type ResolversParentTypes = ResolversObject<{
   ID: Scalars['ID'];
   Int: Scalars['Int'];
   Mutation: {};
+  Node: ResolversParentTypes['Column'];
   Query: {};
   String: Scalars['String'];
 }>;
@@ -207,14 +231,22 @@ export type ColumnResolvers<ContextType = BoardContext, ParentType extends Resol
 
 export type MutationResolvers<ContextType = BoardContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   createBoard?: Resolver<ResolversTypes['Board'], ParentType, ContextType, RequireFields<MutationCreateBoardArgs, 'name'>>;
-  createCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationCreateCardArgs, 'columnId' | 'description' | 'position' | 'title'>>;
+  createCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationCreateCardArgs, 'columnId' | 'description' | 'title'>>;
   createColumn?: Resolver<ResolversTypes['Column'], ParentType, ContextType, RequireFields<MutationCreateColumnArgs, 'boardId' | 'name' | 'position'>>;
+  createSimpleCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationCreateSimpleCardArgs, 'columnId' | 'title'>>;
   moveCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationMoveCardArgs, 'cardId' | 'targetColumnId' | 'targetPosition'>>;
+}>;
+
+export type NodeResolvers<ContextType = BoardContext, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = ResolversObject<{
+  __resolveType: TypeResolveFn<'Column', ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
 }>;
 
 export type QueryResolvers<ContextType = BoardContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   board?: Resolver<ResolversTypes['Board'], ParentType, ContextType, RequireFields<QueryBoardArgs, 'id'>>;
   boards?: Resolver<Array<ResolversTypes['Board']>, ParentType, ContextType>;
+  column?: Resolver<ResolversTypes['Column'], ParentType, ContextType, RequireFields<QueryColumnArgs, 'id'>>;
+  node?: Resolver<Maybe<ResolversTypes['Node']>, ParentType, ContextType, RequireFields<QueryNodeArgs, 'id'>>;
 }>;
 
 export type Resolvers<ContextType = BoardContext> = ResolversObject<{
@@ -222,6 +254,7 @@ export type Resolvers<ContextType = BoardContext> = ResolversObject<{
   Card?: CardResolvers<ContextType>;
   Column?: ColumnResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
+  Node?: NodeResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
 }>;
 
