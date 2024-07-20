@@ -12,6 +12,11 @@ const mutations: MutationResolvers = {
   },
 
   // @ts-ignore
+  deleteCard: async (_, { cardId }, { dataSources }) => {
+    return dataSources.boardsAPI.deleteCard(cardId);
+  },
+
+  // @ts-ignore
   createSimpleCard: async (_, { columnId, title }, { dataSources }) => {
     return dataSources.boardsAPI.createSimpleCard(columnId, title);
   },

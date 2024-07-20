@@ -46,6 +46,7 @@ export type Mutation = {
   createCard: Card;
   createColumn: Column;
   createSimpleCard: Card;
+  deleteCard: Card;
   moveCard: Card;
 };
 
@@ -72,6 +73,11 @@ export type MutationCreateColumnArgs = {
 export type MutationCreateSimpleCardArgs = {
   columnId: Scalars['ID'];
   title: Scalars['String'];
+};
+
+
+export type MutationDeleteCardArgs = {
+  cardId: Scalars['ID'];
 };
 
 
@@ -234,6 +240,7 @@ export type MutationResolvers<ContextType = BoardContext, ParentType extends Res
   createCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationCreateCardArgs, 'columnId' | 'description' | 'title'>>;
   createColumn?: Resolver<ResolversTypes['Column'], ParentType, ContextType, RequireFields<MutationCreateColumnArgs, 'boardId' | 'name' | 'position'>>;
   createSimpleCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationCreateSimpleCardArgs, 'columnId' | 'title'>>;
+  deleteCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationDeleteCardArgs, 'cardId'>>;
   moveCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationMoveCardArgs, 'cardId' | 'targetColumnId' | 'targetPosition'>>;
 }>;
 

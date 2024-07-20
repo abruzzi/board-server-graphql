@@ -1,40 +1,41 @@
 interface Node {
-  id: ID!
+    id: ID!
 }
 
 type Card {
-  id: ID!
-  title: String!
-  description: String!
-  position: Int!
-  column: Column!
+    id: ID!
+    title: String!
+    description: String!
+    position: Int!
+    column: Column!
 }
 
 type Column implements Node {
-  id: ID!
-  name: String!
-  position: Int!
-  board: Board!
-  cards: [Card!]!
+    id: ID!
+    name: String!
+    position: Int!
+    board: Board!
+    cards: [Card!]!
 }
 
 type Board {
-  id: ID!
-  name: String!
-  columns: [Column!]!
+    id: ID!
+    name: String!
+    columns: [Column!]!
 }
 
 type Query {
-  boards: [Board!]!
-  board(id: ID!): Board!
-  column(id: ID!): Column!
-  node(id: ID!): Node
+    boards: [Board!]!
+    board(id: ID!): Board!
+    column(id: ID!): Column!
+    node(id: ID!): Node
 }
 
 type Mutation {
-  createBoard(name: String!): Board!
-  createColumn(boardId: ID!, name: String!, position: Int!): Column!
-  createCard(columnId: ID!, title: String!, description: String!): Card!
-  createSimpleCard(columnId: ID!, title: String!): Card!
-  moveCard(cardId: ID!, targetColumnId: ID!, targetPosition: Int!): Card!
+    createBoard(name: String!): Board!
+    createColumn(boardId: ID!, name: String!, position: Int!): Column!
+    createCard(columnId: ID!, title: String!, description: String!): Card!
+    deleteCard(cardId: ID!): Card!
+    createSimpleCard(columnId: ID!, title: String!): Card!
+    moveCard(cardId: ID!, targetColumnId: ID!, targetPosition: Int!): Card!
 }

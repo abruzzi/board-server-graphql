@@ -53,6 +53,12 @@ export class BoardsDataSource {
     }
   }
 
+  async deleteCard(cardId: string): Promise<Card> {
+    return prisma.card.delete({
+      where: {id: cardId}
+    });
+  }
+
   async createSimpleCard(columnId: string, title: string): Promise<Card> {
     if (columnId && title) {
       return prisma.card.create({
