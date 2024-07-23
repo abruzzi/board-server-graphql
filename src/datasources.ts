@@ -8,9 +8,14 @@ const INCREASE_STEP = 10;
 const POSITION_STEP = 100;
 
 export class BoardsDataSource {
-  async getBoard(
-    id: string
-  ): Promise<(Board & { columns: (Column & { cards: Card[] })[] }) | null> {
+  async getBoard(id: string): Promise<
+    | (Board & {
+        columns: (Column & {
+          cards: Card[];
+        })[];
+      })
+    | null
+  > {
     return prisma.board.findUnique({
       where: { id },
       include: {
@@ -28,7 +33,12 @@ export class BoardsDataSource {
     });
   }
 
-  async getColumn(id: string): Promise<(Column & { cards: Card[] }) | null> {
+  async getColumn(id: string): Promise<
+    | (Column & {
+        cards: Card[];
+      })
+    | null
+  > {
     return prisma.column.findUnique({
       where: { id },
       include: {
@@ -48,7 +58,25 @@ export class BoardsDataSource {
     });
   }
 
-  async getBoards(): Promise<(Board & { columns: Column[] })[]> {
+  async createBoardWithDefaultColumns(name: string) {
+    const board = await prisma.board.create({
+      data: { name },
+    });
+
+    const columns = ["To do", "In progress", "Done"];
+
+    await Promise.all(
+      columns.map((col, index) => this.createColumn(board.id, col, index))
+    );
+
+    return board;
+  }
+
+  async getBoards(): Promise<
+    (Board & {
+      columns: Column[];
+    })[]
+  > {
     return prisma.board.findMany({
       include: { columns: true },
     });

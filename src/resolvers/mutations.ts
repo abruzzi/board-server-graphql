@@ -3,7 +3,7 @@ import { MutationResolvers } from "__generated__/resolvers-types";
 const mutations: MutationResolvers = {
   // @ts-ignore
   createBoard: async (_, { name }, { dataSources }) => {
-    return dataSources.boardsAPI.createBoard(name);
+    return dataSources.boardsAPI.createBoardWithDefaultColumns(name);
   },
 
   // @ts-ignore
