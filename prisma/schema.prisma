@@ -29,6 +29,7 @@ model Card {
   id        String @id @default(uuid())
   title     String
   description String
+  imageUrl    String? // Optional field
   position  Int
   columnId  String
   column   Column @relation(fields: [columnId], references: [id])

@@ -27,6 +27,7 @@ export type Card = {
   column: Column;
   description: Scalars['String'];
   id: Scalars['ID'];
+  imageUrl?: Maybe<Scalars['String']>;
   position: Scalars['Int'];
   title: Scalars['String'];
 };
@@ -43,23 +44,16 @@ export type Column = Node & {
 export type Mutation = {
   __typename?: 'Mutation';
   createBoard: Board;
-  createCard: Card;
   createColumn: Column;
   createSimpleCard: Card;
   deleteCard: Card;
   moveCard: Card;
+  updateCard: Card;
 };
 
 
 export type MutationCreateBoardArgs = {
   name: Scalars['String'];
-};
-
-
-export type MutationCreateCardArgs = {
-  columnId: Scalars['ID'];
-  description: Scalars['String'];
-  title: Scalars['String'];
 };
 
 
@@ -85,6 +79,14 @@ export type MutationMoveCardArgs = {
   cardId: Scalars['ID'];
   targetColumnId: Scalars['ID'];
   targetPosition: Scalars['Int'];
+};
+
+
+export type MutationUpdateCardArgs = {
+  cardId: Scalars['ID'];
+  description: Scalars['String'];
+  imageUrl?: InputMaybe<Scalars['String']>;
+  title: Scalars['String'];
 };
 
 export type Node = {
@@ -221,6 +223,7 @@ export type CardResolvers<ContextType = BoardContext, ParentType extends Resolve
   column?: Resolver<ResolversTypes['Column'], ParentType, ContextType>;
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  imageUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   position?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -237,11 +240,11 @@ export type ColumnResolvers<ContextType = BoardContext, ParentType extends Resol
 
 export type MutationResolvers<ContextType = BoardContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   createBoard?: Resolver<ResolversTypes['Board'], ParentType, ContextType, RequireFields<MutationCreateBoardArgs, 'name'>>;
-  createCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationCreateCardArgs, 'columnId' | 'description' | 'title'>>;
   createColumn?: Resolver<ResolversTypes['Column'], ParentType, ContextType, RequireFields<MutationCreateColumnArgs, 'boardId' | 'name' | 'position'>>;
   createSimpleCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationCreateSimpleCardArgs, 'columnId' | 'title'>>;
   deleteCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationDeleteCardArgs, 'cardId'>>;
   moveCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationMoveCardArgs, 'cardId' | 'targetColumnId' | 'targetPosition'>>;
+  updateCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationUpdateCardArgs, 'cardId' | 'description' | 'title'>>;
 }>;
 
 export type NodeResolvers<ContextType = BoardContext, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = ResolversObject<{
