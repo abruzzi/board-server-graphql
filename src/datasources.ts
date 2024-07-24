@@ -1,13 +1,16 @@
 import { PrismaClient } from "@prisma/client";
+import { Card, Board, Column, User } from "@prisma/client";
 
 const prisma = new PrismaClient();
-
-import { Card, Board, Column } from "@prisma/client";
 
 const INCREASE_STEP = 10;
 const POSITION_STEP = 100;
 
 export class BoardsDataSource {
+  async getUser(id: string): Promise<User> {
+    return prisma.user.findUnique({ where: { id } });
+  }
+
   async getBoard(id: string): Promise<
     | (Board & {
         columns: (Column & {
@@ -52,15 +55,15 @@ export class BoardsDataSource {
     });
   }
 
-  async createBoard(name: string) {
+  async createBoard(name: string, userId: string) {
     return prisma.board.create({
-      data: { name },
+      data: { name, userId },
     });
   }
 
-  async createBoardWithDefaultColumns(name: string) {
+  async createBoardWithDefaultColumns(name: string, userId: string) {
     const board = await prisma.board.create({
-      data: { name },
+      data: { name, userId },
     });
 
     const columns = ["To do", "In progress", "Done"];
@@ -86,6 +89,20 @@ export class BoardsDataSource {
     return prisma.column.create({
       data: { boardId, name, position },
     });
+  }
+
+  async createUser(email: string, name: string) {
+    return prisma.user.create({
+      data: { name, email },
+    });
+  }
+
+  async signIn(email: string) {
+    let user = await prisma.user.findUnique({ where: { email } });
+    if (!user) {
+      user = await prisma.user.create({ data: { email } });
+    }
+    return user;
   }
 
   async createSimpleCard(columnId: string, title: string): Promise<Card> {

@@ -2,8 +2,8 @@ import { MutationResolvers } from "__generated__/resolvers-types";
 
 const mutations: MutationResolvers = {
   // @ts-ignore
-  createBoard: async (_, { name }, { dataSources }) => {
-    return dataSources.boardsAPI.createBoardWithDefaultColumns(name);
+  createBoard: async (_, { name, userId }, { dataSources }) => {
+    return dataSources.boardsAPI.createBoardWithDefaultColumns(name, userId);
   },
 
   // @ts-ignore
@@ -45,6 +45,16 @@ const mutations: MutationResolvers = {
       targetColumnId,
       targetPosition
     );
+  },
+
+  // @ts-ignore
+  signUp: async (_, { email, name }, { dataSources }) => {
+    return dataSources.boardsAPI.createUser(email, name);
+  },
+
+  // @ts-ignore
+  signIn: async (_, { email }, { dataSources }) => {
+    return dataSources.boardsAPI.signIn(email);
   },
 };
 

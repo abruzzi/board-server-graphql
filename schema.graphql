@@ -2,6 +2,13 @@ interface Node {
     id: ID!
 }
 
+type User {
+    id: ID!
+    email: String!
+    name: String
+    boards: [Board!]!
+}
+
 type Card {
     id: ID!
     title: String!
@@ -30,10 +37,14 @@ type Query {
     board(id: ID!): Board!
     column(id: ID!): Column!
     node(id: ID!): Node
+    currentUser: User
 }
 
 type Mutation {
-    createBoard(name: String!): Board!
+    signUp(email: String!, name: String): User
+    signIn(email: String!): User
+
+    createBoard(name: String!, userId: ID!): Board!
     createColumn(boardId: ID!, name: String!, position: Int!): Column!
 
     createSimpleCard(columnId: ID!, title: String!): Card!

@@ -2,6 +2,12 @@ import { QueryResolvers } from "__generated__/resolvers-types";
 
 const queries: QueryResolvers = {
   // @ts-ignore
+  currentUser: async (_, __, { user, dataSources }) => {
+    if (!user) throw new Error("Not authenticated");
+    return dataSources.boardsAPI.getUser(user.id);
+  },
+
+  // @ts-ignore
   boards: async (_, __, { dataSources }) => {
     return dataSources.boardsAPI.getBoards();
   },
@@ -18,12 +24,7 @@ const queries: QueryResolvers = {
 
   // @ts-ignore
   node: async (_, { id }, { dataSources }) => {
-    const column = await dataSources.boardsAPI.getColumn(id);
-    if (column) {
-      return column;
-    }
-
-    return null;
+    return dataSources.boardsAPI.getColumn(id);
   },
 };
 
