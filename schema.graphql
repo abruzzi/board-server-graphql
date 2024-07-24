@@ -33,7 +33,7 @@ type Board {
 }
 
 type Query {
-    boards: [Board!]!
+    boards(userId: ID!): [Board!]!
     board(id: ID!): Board!
     column(id: ID!): Column!
     node(id: ID!): Node
@@ -44,10 +44,10 @@ type Mutation {
     signUp(email: String!, name: String): User
     signIn(email: String!): User
 
-    createBoard(name: String!, userId: ID!): Board!
+    createSimpleCard(columnId: ID!, title: String!): Card!
+
     createColumn(boardId: ID!, name: String!, position: Int!): Column!
 
-    createSimpleCard(columnId: ID!, title: String!): Card!
     deleteCard(cardId: ID!): Card!
     updateCard(cardId: ID!, title: String!, description: String!, imageUrl: String): Card!
     moveCard(cardId: ID!, targetColumnId: ID!, targetPosition: Int!): Card!

@@ -8,8 +8,9 @@ const queries: QueryResolvers = {
   },
 
   // @ts-ignore
-  boards: async (_, __, { dataSources }) => {
-    return dataSources.boardsAPI.getBoards();
+  boards: async (_, __, { user, dataSources }) => {
+    if (!user) throw new Error("Not authenticated");
+    return dataSources.boardsAPI.getBoards(user.id);
   },
 
   // @ts-ignore

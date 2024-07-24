@@ -43,7 +43,6 @@ export type Column = Node & {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  createBoard: Board;
   createColumn: Column;
   createSimpleCard: Card;
   deleteCard: Card;
@@ -51,12 +50,6 @@ export type Mutation = {
   signIn?: Maybe<User>;
   signUp?: Maybe<User>;
   updateCard: Card;
-};
-
-
-export type MutationCreateBoardArgs = {
-  name: Scalars['String'];
-  userId: Scalars['ID'];
 };
 
 
@@ -119,6 +112,11 @@ export type Query = {
 
 export type QueryBoardArgs = {
   id: Scalars['ID'];
+};
+
+
+export type QueryBoardsArgs = {
+  userId: Scalars['ID'];
 };
 
 
@@ -264,7 +262,6 @@ export type ColumnResolvers<ContextType = BoardContext, ParentType extends Resol
 }>;
 
 export type MutationResolvers<ContextType = BoardContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
-  createBoard?: Resolver<ResolversTypes['Board'], ParentType, ContextType, RequireFields<MutationCreateBoardArgs, 'name' | 'userId'>>;
   createColumn?: Resolver<ResolversTypes['Column'], ParentType, ContextType, RequireFields<MutationCreateColumnArgs, 'boardId' | 'name' | 'position'>>;
   createSimpleCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationCreateSimpleCardArgs, 'columnId' | 'title'>>;
   deleteCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationDeleteCardArgs, 'cardId'>>;
@@ -281,7 +278,7 @@ export type NodeResolvers<ContextType = BoardContext, ParentType extends Resolve
 
 export type QueryResolvers<ContextType = BoardContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   board?: Resolver<ResolversTypes['Board'], ParentType, ContextType, RequireFields<QueryBoardArgs, 'id'>>;
-  boards?: Resolver<Array<ResolversTypes['Board']>, ParentType, ContextType>;
+  boards?: Resolver<Array<ResolversTypes['Board']>, ParentType, ContextType, RequireFields<QueryBoardsArgs, 'userId'>>;
   column?: Resolver<ResolversTypes['Column'], ParentType, ContextType, RequireFields<QueryColumnArgs, 'id'>>;
   currentUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   node?: Resolver<Maybe<ResolversTypes['Node']>, ParentType, ContextType, RequireFields<QueryNodeArgs, 'id'>>;

@@ -2,8 +2,9 @@ import { MutationResolvers } from "__generated__/resolvers-types";
 
 const mutations: MutationResolvers = {
   // @ts-ignore
-  createBoard: async (_, { name, userId }, { dataSources }) => {
-    return dataSources.boardsAPI.createBoardWithDefaultColumns(name, userId);
+  createBoard: async (_, { name }, { user, dataSources }) => {
+    if (!user) throw new Error('Not authenticated');
+    return dataSources.boardsAPI.createBoardWithDefaultColumns(name, user.id);
   },
 
   // @ts-ignore

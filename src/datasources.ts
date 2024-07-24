@@ -75,12 +75,13 @@ export class BoardsDataSource {
     return board;
   }
 
-  async getBoards(): Promise<
+  async getBoards(userId: string): Promise<
     (Board & {
       columns: Column[];
     })[]
   > {
     return prisma.board.findMany({
+      where: { userId },
       include: { columns: true },
     });
   }
