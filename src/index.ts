@@ -27,7 +27,7 @@ const server = new ApolloServer<BoardContext>({
 });
 
 const getUser = (token: string) => {
-  if(!token) {
+  if (!token) {
     return null;
   }
 
@@ -39,6 +39,9 @@ const getUser = (token: string) => {
 };
 
 const { url } = await startStandaloneServer<BoardContext>(server, {
+  listen: {
+    port: parseInt(process.env.PORT) || 8080,
+  },
   context: async ({ req }) => {
     const token = req.headers.authorization || "";
     const user = getUser(token);
