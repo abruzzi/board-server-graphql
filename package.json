@@ -4,6 +4,9 @@
   "description": "An example of generating types from a schema to use in your resolvers.",
   "main": "index.js",
   "type": "module",
+  "engines": {
+    "node": ">=16.0.0"
+  },
   "scripts": {
     "generate": "graphql-codegen --config codegen.yml",
     "compile": "npm run generate && tsc",
@@ -29,6 +32,7 @@
     "@graphql-codegen/cli": "2.16.5",
     "@graphql-codegen/typescript": "2.8.8",
     "@graphql-codegen/typescript-resolvers": "2.7.13",
+    "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^18.7.18",
     "concurrently": "7.6.0",
     "nodemon": "2.0.22",
