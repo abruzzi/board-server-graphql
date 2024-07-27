@@ -34,13 +34,14 @@ async function startServer() {
     resolvers,
   });
 
-  app.use(cors({
-    origin: '*',
-    credentials: true,
-  }));
+  await server.start();
 
   app.use(
     "/graphql",
+    cors({
+      origin: '*',
+      credentials: true,
+    }),
     express.json(),
     expressMiddleware(server, {
       context: async ({ req }) => {
@@ -59,6 +60,10 @@ async function startServer() {
 
   app.post(
     "/auth/google-callback",
+    cors({
+      origin: '*',
+      credentials: true,
+    }),
     express.json(),
     async (req, res) => {
       const { code } = req.body;
@@ -105,8 +110,6 @@ async function startServer() {
     }
   );
 
-  await server.start();
-  
   const port = parseInt(process.env.PORT) || 8080;
   await new Promise<void>((resolve) => httpServer.listen({ port }, resolve));
 
