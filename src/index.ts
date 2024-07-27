@@ -104,9 +104,9 @@ async function startServer() {
       }
     }
   );
-  
-  await server.start();
 
+  await server.start();
+  
   const port = parseInt(process.env.PORT) || 8080;
   await new Promise<void>((resolve) => httpServer.listen({ port }, resolve));
 
