@@ -76,6 +76,7 @@ async function startServer() {
       const idToken = tokens.id_token;
 
       // Verify the ID token
+      oauth2Client.setCredentials(tokens);
       const ticket = await oauth2Client.verifyIdToken({
         idToken: idToken,
         audience: process.env.GOOGLE_CLIENT_ID,
