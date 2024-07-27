@@ -4,7 +4,10 @@ const queries: QueryResolvers = {
   // @ts-ignore
   currentUser: async (_, __, { user, dataSources }) => {
     if (!user) throw new Error("Not authenticated");
-    return dataSources.boardsAPI.getUser(user.id);
+    if (user.id) {
+      return dataSources.boardsAPI.getUser(user.id);
+    }
+    return dataSources.boardsAPI.getUserByEmail(user.email);
   },
 
   // @ts-ignore

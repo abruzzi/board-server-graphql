@@ -11,6 +11,10 @@ export class BoardsDataSource {
     return prisma.user.findUnique({ where: { id } });
   }
 
+  async getUserByEmail(email: string): Promise<User> {
+    return prisma.user.findUnique({ where: { email } });
+  }
+
   async getBoard(id: string): Promise<
     | (Board & {
         columns: (Column & {
@@ -95,6 +99,18 @@ export class BoardsDataSource {
   async createUser(email: string, name: string) {
     return prisma.user.create({
       data: { name, email },
+    });
+  }
+
+  async updateUser(id: string, email: string, name: string) {
+    return prisma.user.update({
+      where: {
+        id,
+      },
+      data: {
+        email,
+        name,
+      },
     });
   }
 
