@@ -66,6 +66,15 @@ export class BoardsDataSource {
   }
 
   async createBoardWithDefaultColumns(name: string, userId: string) {
+    // Verify the user exists
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
     const board = await prisma.board.create({
       data: { name, userId },
     });

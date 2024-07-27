@@ -55,7 +55,9 @@ async function startServer() {
     express.json(),
     expressMiddleware(server, {
       context: async ({ req }) => {
-        const token = req.headers.authorization || "";
+        const authHeader = req.headers.authorization || "";
+        const token = authHeader.split(" ")[1];
+
         const user = getUser(token);
 
         return {
@@ -86,14 +88,14 @@ async function startServer() {
       const { email, name } = payload;
 
       // Check if user exists in your database
-      const user = await boardsAPI.getUserByEmail(email);
+      let user = await boardsAPI.getUserByEmail(email);
 
       if (!user) {
         // User doesn't exist, create a new account
-        await boardsAPI.createUser(email, name);
+        user = await boardsAPI.createUser(email, name);
       } else {
         // User exists, update their information if necessary
-        await boardsAPI.updateUser(user.id, email, name);
+        user = await boardsAPI.updateUser(user.id, email, name);
       }
 
       // Create a JWT token for your app
