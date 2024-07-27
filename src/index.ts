@@ -58,49 +58,57 @@ async function startServer() {
     })
   );
 
-  app.post("/auth/google-callback", express.json(), async (req, res) => {
-    const { code } = req.body;
-    try {
-      // Exchange code for tokens
-      const { tokens } = await oauth2Client.getToken(code);
-      const idToken = tokens.id_token;
+  app.post(
+    "/auth/google-callback",
+    cors<cors.CorsRequest>({
+      origin: "*",
+      credentials: true,
+    }),
+    express.json(),
+    async (req, res) => {
+      const { code } = req.body;
+      try {
+        // Exchange code for tokens
+        const { tokens } = await oauth2Client.getToken(code);
+        const idToken = tokens.id_token;
 
-      // Verify the ID token
-      const ticket = await oauth2Client.verifyIdToken({
-        idToken: idToken,
-        audience: process.env.GOOGLE_CLIENT_ID,
-      });
+        // Verify the ID token
+        const ticket = await oauth2Client.verifyIdToken({
+          idToken: idToken,
+          audience: process.env.GOOGLE_CLIENT_ID,
+        });
 
-      const payload = ticket.getPayload();
-      const email = payload["email"];
-      const name = payload["name"];
+        const payload = ticket.getPayload();
+        const email = payload["email"];
+        const name = payload["name"];
 
-      // Check if user exists in your database
-      let user = await boardsAPI.getUserByEmail(email);
+        // Check if user exists in your database
+        let user = await boardsAPI.getUserByEmail(email);
 
-      if (!user) {
-        // User doesn't exist, create a new account
-        await boardsAPI.createUser(email, name);
-      } else {
-        // User exists, update their information if necessary
-        await boardsAPI.updateUser(user.id, email, name);
+        if (!user) {
+          // User doesn't exist, create a new account
+          await boardsAPI.createUser(email, name);
+        } else {
+          // User exists, update their information if necessary
+          await boardsAPI.updateUser(user.id, email, name);
+        }
+
+        // Create a JWT token for your app
+        const appToken = jwt.sign(user, process.env.JWT_SECRET, {
+          expiresIn: "3d",
+        });
+
+        // Send the token back to the frontend
+        res.json({ token: appToken });
+      } catch (error) {
+        console.error(
+          "Error exchanging code for tokens:",
+          error.response?.data || error.message
+        );
+        res.status(500).json({ error: "Failed to exchange code for tokens" });
       }
-
-      // Create a JWT token for your app
-      const appToken = jwt.sign(user, process.env.JWT_SECRET, {
-        expiresIn: "3d",
-      });
-
-      // Send the token back to the frontend
-      res.json({ token: appToken });
-    } catch (error) {
-      console.error(
-        "Error exchanging code for tokens:",
-        error.response?.data || error.message
-      );
-      res.status(500).json({ error: "Failed to exchange code for tokens" });
     }
-  });
+  );
 
   const port = parseInt(process.env.PORT) || 8080;
   await new Promise<void>((resolve) => httpServer.listen({ port }, resolve));
