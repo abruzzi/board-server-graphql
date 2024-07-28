@@ -223,6 +223,19 @@ export class BoardsDataSource {
         },
       });
 
+      // when move into an empty column, there isn't any cards in the column yet
+      if (!smallestPositionCard) {
+        return prisma.card.update({
+          where: {
+            id: cardId,
+          },
+          data: {
+            columnId: targetColumnId,
+            position: POSITION_STEP,
+          },
+        });
+      }
+
       if (smallestPositionCard.position >= INCREASE_STEP) {
         return prisma.card.update({
           where: { id: cardId },
