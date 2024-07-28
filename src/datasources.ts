@@ -72,7 +72,7 @@ export class BoardsDataSource {
     });
 
     if (!user) {
-      throw new Error('User not found');
+      throw new Error("User not found");
     }
 
     const board = await prisma.board.create({
@@ -81,9 +81,9 @@ export class BoardsDataSource {
 
     const columns = ["To do", "In progress", "Done"];
 
-    await Promise.all(
-      columns.map((col, index) => this.createColumn(board.id, col, index))
-    );
+    for (const [index, col] of columns.entries()) {
+      await this.createColumn(board.id, col, index);
+    }
 
     return board;
   }
