@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { Card, Board, Column, User } from "@prisma/client";
+import { Card, Board, Column, User, Comment, Tag } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -15,10 +15,28 @@ export class BoardsDataSource {
     return prisma.user.findUnique({ where: { email } });
   }
 
+  async getComments(cardId: string): Promise<Comment[]> {
+    return prisma.comment.findMany({
+      where: {
+        cardId: cardId,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  }
+
+  async getTags(): Promise<Tag[]> {
+    return prisma.tag.findMany();
+  }
+
   async getBoard(id: string): Promise<
     | (Board & {
         columns: (Column & {
-          cards: Card[];
+          cards: (Card & {
+            column: Column;
+            tags: Tag[];
+          })[];
         })[];
       })
     | null
@@ -31,6 +49,7 @@ export class BoardsDataSource {
             cards: {
               include: {
                 column: true,
+                tags: true,
               },
               orderBy: { position: "asc" },
             },
@@ -56,12 +75,6 @@ export class BoardsDataSource {
           orderBy: { position: "asc" },
         },
       },
-    });
-  }
-
-  async createBoard(name: string, userId: string) {
-    return prisma.board.create({
-      data: { name, userId },
     });
   }
 

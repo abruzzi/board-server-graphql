@@ -22,6 +22,16 @@ const queries: QueryResolvers = {
   },
 
   // @ts-ignore
+  comments: async (_, { cardId }, { dataSources }) => {
+    return dataSources.boardsAPI.getComments(cardId);
+  },
+
+  // @ts-ignore
+  tags: async (_, {}, { dataSources }) => {
+    return dataSources.boardsAPI.getTags();
+  },
+
+  // @ts-ignore
   column: async (_, { id }, { dataSources }) => {
     return dataSources.boardsAPI.getColumn(id);
   },

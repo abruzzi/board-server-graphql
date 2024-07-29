@@ -25,11 +25,15 @@ export type Board = {
 export type Card = {
   __typename?: 'Card';
   column: Column;
+  comments: Array<Comment>;
+  createdAt: Scalars['String'];
   description: Scalars['String'];
   id: Scalars['ID'];
   imageUrl?: Maybe<Scalars['String']>;
   position: Scalars['Int'];
+  tags: Array<Tag>;
   title: Scalars['String'];
+  updatedAt: Scalars['String'];
 };
 
 export type Column = Node & {
@@ -41,16 +45,43 @@ export type Column = Node & {
   position: Scalars['Int'];
 };
 
+export type Comment = {
+  __typename?: 'Comment';
+  card: Card;
+  content: Scalars['String'];
+  createdAt: Scalars['String'];
+  id: Scalars['ID'];
+  updatedAt: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
+  addCommentToCard: Comment;
+  addTagToCard: Card;
   createBoard: Board;
   createColumn: Column;
   createSimpleCard: Card;
   deleteCard: Card;
   moveCard: Card;
+  removeTagFromCard: Card;
   signIn?: Maybe<User>;
   signUp?: Maybe<User>;
   updateCard: Card;
+  updateCardDescription: Card;
+  updateCardImageUrl: Card;
+  updateCardTitle: Card;
+};
+
+
+export type MutationAddCommentToCardArgs = {
+  cardId: Scalars['ID'];
+  content: Scalars['String'];
+};
+
+
+export type MutationAddTagToCardArgs = {
+  cardId: Scalars['ID'];
+  tagName: Scalars['String'];
 };
 
 
@@ -84,6 +115,12 @@ export type MutationMoveCardArgs = {
 };
 
 
+export type MutationRemoveTagFromCardArgs = {
+  cardId: Scalars['ID'];
+  tagId: Scalars['ID'];
+};
+
+
 export type MutationSignInArgs = {
   email: Scalars['String'];
 };
@@ -102,6 +139,24 @@ export type MutationUpdateCardArgs = {
   title: Scalars['String'];
 };
 
+
+export type MutationUpdateCardDescriptionArgs = {
+  cardId: Scalars['ID'];
+  description: Scalars['String'];
+};
+
+
+export type MutationUpdateCardImageUrlArgs = {
+  cardId: Scalars['ID'];
+  imageUrl: Scalars['String'];
+};
+
+
+export type MutationUpdateCardTitleArgs = {
+  cardId: Scalars['ID'];
+  title: Scalars['String'];
+};
+
 export type Node = {
   id: Scalars['ID'];
 };
@@ -111,8 +166,10 @@ export type Query = {
   board: Board;
   boards: Array<Board>;
   column: Column;
+  comments: Array<Comment>;
   currentUser?: Maybe<User>;
   node?: Maybe<Node>;
+  tags: Array<Tag>;
 };
 
 
@@ -126,8 +183,20 @@ export type QueryColumnArgs = {
 };
 
 
+export type QueryCommentsArgs = {
+  cardId: Scalars['ID'];
+};
+
+
 export type QueryNodeArgs = {
   id: Scalars['ID'];
+};
+
+export type Tag = {
+  __typename?: 'Tag';
+  cards: Array<Card>;
+  id: Scalars['ID'];
+  name: Scalars['String'];
 };
 
 export type User = {
@@ -212,12 +281,14 @@ export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Card: ResolverTypeWrapper<Card>;
   Column: ResolverTypeWrapper<Column>;
+  Comment: ResolverTypeWrapper<Comment>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   Mutation: ResolverTypeWrapper<{}>;
   Node: ResolversTypes['Column'];
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']>;
+  Tag: ResolverTypeWrapper<Tag>;
   User: ResolverTypeWrapper<User>;
 }>;
 
@@ -227,12 +298,14 @@ export type ResolversParentTypes = ResolversObject<{
   Boolean: Scalars['Boolean'];
   Card: Card;
   Column: Column;
+  Comment: Comment;
   ID: Scalars['ID'];
   Int: Scalars['Int'];
   Mutation: {};
   Node: ResolversParentTypes['Column'];
   Query: {};
   String: Scalars['String'];
+  Tag: Tag;
   User: User;
 }>;
 
@@ -245,11 +318,15 @@ export type BoardResolvers<ContextType = BoardContext, ParentType extends Resolv
 
 export type CardResolvers<ContextType = BoardContext, ParentType extends ResolversParentTypes['Card'] = ResolversParentTypes['Card']> = ResolversObject<{
   column?: Resolver<ResolversTypes['Column'], ParentType, ContextType>;
+  comments?: Resolver<Array<ResolversTypes['Comment']>, ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   imageUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   position?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  tags?: Resolver<Array<ResolversTypes['Tag']>, ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -262,15 +339,30 @@ export type ColumnResolvers<ContextType = BoardContext, ParentType extends Resol
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
+export type CommentResolvers<ContextType = BoardContext, ParentType extends ResolversParentTypes['Comment'] = ResolversParentTypes['Comment']> = ResolversObject<{
+  card?: Resolver<ResolversTypes['Card'], ParentType, ContextType>;
+  content?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type MutationResolvers<ContextType = BoardContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
+  addCommentToCard?: Resolver<ResolversTypes['Comment'], ParentType, ContextType, RequireFields<MutationAddCommentToCardArgs, 'cardId' | 'content'>>;
+  addTagToCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationAddTagToCardArgs, 'cardId' | 'tagName'>>;
   createBoard?: Resolver<ResolversTypes['Board'], ParentType, ContextType, RequireFields<MutationCreateBoardArgs, 'name'>>;
   createColumn?: Resolver<ResolversTypes['Column'], ParentType, ContextType, RequireFields<MutationCreateColumnArgs, 'boardId' | 'name' | 'position'>>;
   createSimpleCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationCreateSimpleCardArgs, 'columnId' | 'title'>>;
   deleteCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationDeleteCardArgs, 'cardId'>>;
   moveCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationMoveCardArgs, 'cardId' | 'targetColumnId' | 'targetPosition'>>;
+  removeTagFromCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationRemoveTagFromCardArgs, 'cardId' | 'tagId'>>;
   signIn?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationSignInArgs, 'email'>>;
   signUp?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationSignUpArgs, 'email'>>;
   updateCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationUpdateCardArgs, 'cardId' | 'description' | 'title'>>;
+  updateCardDescription?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationUpdateCardDescriptionArgs, 'cardId' | 'description'>>;
+  updateCardImageUrl?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationUpdateCardImageUrlArgs, 'cardId' | 'imageUrl'>>;
+  updateCardTitle?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationUpdateCardTitleArgs, 'cardId' | 'title'>>;
 }>;
 
 export type NodeResolvers<ContextType = BoardContext, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = ResolversObject<{
@@ -282,8 +374,17 @@ export type QueryResolvers<ContextType = BoardContext, ParentType extends Resolv
   board?: Resolver<ResolversTypes['Board'], ParentType, ContextType, RequireFields<QueryBoardArgs, 'id'>>;
   boards?: Resolver<Array<ResolversTypes['Board']>, ParentType, ContextType>;
   column?: Resolver<ResolversTypes['Column'], ParentType, ContextType, RequireFields<QueryColumnArgs, 'id'>>;
+  comments?: Resolver<Array<ResolversTypes['Comment']>, ParentType, ContextType, RequireFields<QueryCommentsArgs, 'cardId'>>;
   currentUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   node?: Resolver<Maybe<ResolversTypes['Node']>, ParentType, ContextType, RequireFields<QueryNodeArgs, 'id'>>;
+  tags?: Resolver<Array<ResolversTypes['Tag']>, ParentType, ContextType>;
+}>;
+
+export type TagResolvers<ContextType = BoardContext, ParentType extends ResolversParentTypes['Tag'] = ResolversParentTypes['Tag']> = ResolversObject<{
+  cards?: Resolver<Array<ResolversTypes['Card']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type UserResolvers<ContextType = BoardContext, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = ResolversObject<{
@@ -298,9 +399,11 @@ export type Resolvers<ContextType = BoardContext> = ResolversObject<{
   Board?: BoardResolvers<ContextType>;
   Card?: CardResolvers<ContextType>;
   Column?: ColumnResolvers<ContextType>;
+  Comment?: CommentResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Node?: NodeResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  Tag?: TagResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
 }>;
 

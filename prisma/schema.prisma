@@ -10,43 +10,64 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// datasource db {
-//   provider = "sqlite"
-//   url      = env("DATABASE_URL")
-// }
-
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
+  id        String    @id @default(uuid())
+  email     String    @unique
   name      String?
+  comments  Comment[]
   boards    Board[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  favorites Board[]   @relation("Favorites")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 model Board {
-  id      String   @id @default(uuid())
-  name    String
+  id        String   @id @default(uuid())
+  name      String
   userId    String
+  favoritedBy User[]    @relation("Favorites")
+  columns   Column[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
   user      User     @relation(fields: [userId], references: [id])
-  columns Column[]
 }
 
 model Column {
-  id      String @id @default(uuid())
-  name    String
+  id       String @id @default(uuid())
+  name     String
   position Int
-  boardId String
-  board   Board   @relation(fields: [boardId], references: [id])
-  cards   Card[]
+  boardId  String
+  board    Board  @relation(fields: [boardId], references: [id])
+  cards    Card[]
 }
 
 model Card {
-  id        String @id @default(uuid())
-  title     String
+  id          String    @id @default(uuid())
+  title       String
   description String
   imageUrl    String? // Optional field
-  position  Int
-  columnId  String
-  column   Column @relation(fields: [columnId], references: [id])
+  tags        Tag[]     @relation("CardTags")
+  comments    Comment[]
+  position    Int
+  columnId    String
+  column      Column    @relation(fields: [columnId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now()) @updatedAt
+}
+
+model Tag {
+  id    String @id @default(uuid())
+  name  String
+  cards Card[] @relation("CardTags")
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  content   String
+  cardId    String
+  card      Card     @relation(fields: [cardId], references: [id])
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }
