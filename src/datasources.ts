@@ -20,8 +20,11 @@ export class BoardsDataSource {
       where: {
         cardId: cardId,
       },
+      include: {
+        user: true,
+      },
       orderBy: {
-        createdAt: 'desc',
+        createdAt: "desc",
       },
     });
   }
@@ -179,6 +182,23 @@ export class BoardsDataSource {
     });
   }
 
+  async addCommentToCard(cardId: string, content: string, userId: string) {
+    return prisma.comment.create({
+      data: {
+        content,
+        card: { connect: { id: cardId } },
+        user: { connect: { id: userId } },
+      },
+    });
+  }
+
+  /**
+   * @deprecated will shift to the granular
+   * @param cardId
+   * @param title
+   * @param description
+   * @param imageUrl
+   */
   async updateCard(
     cardId: string,
     title: string,
@@ -190,6 +210,36 @@ export class BoardsDataSource {
       data: {
         title,
         description,
+        imageUrl,
+      },
+    });
+  }
+
+  async updateCardTitle(cardId: string, title: string): Promise<Card> {
+    return prisma.card.update({
+      where: { id: cardId },
+      data: {
+        title,
+      },
+    });
+  }
+
+  async updateCardDescription(
+    cardId: string,
+    description: string
+  ): Promise<Card> {
+    return prisma.card.update({
+      where: { id: cardId },
+      data: {
+        description,
+      },
+    });
+  }
+
+  async updateCardImageUrl(cardId: string, imageUrl: string): Promise<Card> {
+    return prisma.card.update({
+      where: { id: cardId },
+      data: {
         imageUrl,
       },
     });

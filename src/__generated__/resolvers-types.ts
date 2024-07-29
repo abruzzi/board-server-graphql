@@ -18,8 +18,10 @@ export type Scalars = {
 export type Board = {
   __typename?: 'Board';
   columns: Array<Column>;
+  favoritedBy: Array<User>;
   id: Scalars['ID'];
   name: Scalars['String'];
+  user: User;
 };
 
 export type Card = {
@@ -52,6 +54,7 @@ export type Comment = {
   createdAt: Scalars['String'];
   id: Scalars['ID'];
   updatedAt: Scalars['String'];
+  user: User;
 };
 
 export type Mutation = {
@@ -62,10 +65,12 @@ export type Mutation = {
   createColumn: Column;
   createSimpleCard: Card;
   deleteCard: Card;
+  favoriteBoard: Board;
   moveCard: Card;
   removeTagFromCard: Card;
   signIn?: Maybe<User>;
   signUp?: Maybe<User>;
+  unfavoriteBoard: Board;
   updateCard: Card;
   updateCardDescription: Card;
   updateCardImageUrl: Card;
@@ -108,6 +113,11 @@ export type MutationDeleteCardArgs = {
 };
 
 
+export type MutationFavoriteBoardArgs = {
+  boardId: Scalars['ID'];
+};
+
+
 export type MutationMoveCardArgs = {
   cardId: Scalars['ID'];
   targetColumnId: Scalars['ID'];
@@ -129,6 +139,11 @@ export type MutationSignInArgs = {
 export type MutationSignUpArgs = {
   email: Scalars['String'];
   name?: InputMaybe<Scalars['String']>;
+};
+
+
+export type MutationUnfavoriteBoardArgs = {
+  boardId: Scalars['ID'];
 };
 
 
@@ -202,7 +217,9 @@ export type Tag = {
 export type User = {
   __typename?: 'User';
   boards: Array<Board>;
+  comments: Array<Comment>;
   email: Scalars['String'];
+  favorites: Array<Board>;
   id: Scalars['ID'];
   name?: Maybe<Scalars['String']>;
 };
@@ -311,8 +328,10 @@ export type ResolversParentTypes = ResolversObject<{
 
 export type BoardResolvers<ContextType = BoardContext, ParentType extends ResolversParentTypes['Board'] = ResolversParentTypes['Board']> = ResolversObject<{
   columns?: Resolver<Array<ResolversTypes['Column']>, ParentType, ContextType>;
+  favoritedBy?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -345,6 +364,7 @@ export type CommentResolvers<ContextType = BoardContext, ParentType extends Reso
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -355,10 +375,12 @@ export type MutationResolvers<ContextType = BoardContext, ParentType extends Res
   createColumn?: Resolver<ResolversTypes['Column'], ParentType, ContextType, RequireFields<MutationCreateColumnArgs, 'boardId' | 'name' | 'position'>>;
   createSimpleCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationCreateSimpleCardArgs, 'columnId' | 'title'>>;
   deleteCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationDeleteCardArgs, 'cardId'>>;
+  favoriteBoard?: Resolver<ResolversTypes['Board'], ParentType, ContextType, RequireFields<MutationFavoriteBoardArgs, 'boardId'>>;
   moveCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationMoveCardArgs, 'cardId' | 'targetColumnId' | 'targetPosition'>>;
   removeTagFromCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationRemoveTagFromCardArgs, 'cardId' | 'tagId'>>;
   signIn?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationSignInArgs, 'email'>>;
   signUp?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationSignUpArgs, 'email'>>;
+  unfavoriteBoard?: Resolver<ResolversTypes['Board'], ParentType, ContextType, RequireFields<MutationUnfavoriteBoardArgs, 'boardId'>>;
   updateCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationUpdateCardArgs, 'cardId' | 'description' | 'title'>>;
   updateCardDescription?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationUpdateCardDescriptionArgs, 'cardId' | 'description'>>;
   updateCardImageUrl?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationUpdateCardImageUrlArgs, 'cardId' | 'imageUrl'>>;
@@ -389,7 +411,9 @@ export type TagResolvers<ContextType = BoardContext, ParentType extends Resolver
 
 export type UserResolvers<ContextType = BoardContext, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = ResolversObject<{
   boards?: Resolver<Array<ResolversTypes['Board']>, ParentType, ContextType>;
+  comments?: Resolver<Array<ResolversTypes['Comment']>, ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  favorites?: Resolver<Array<ResolversTypes['Board']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

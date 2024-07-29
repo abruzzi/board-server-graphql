@@ -3,8 +3,14 @@ import { MutationResolvers } from "__generated__/resolvers-types";
 const mutations: MutationResolvers = {
   // @ts-ignore
   createBoard: async (_, { name }, { user, dataSources }) => {
-    if (!user) throw new Error('Not authenticated');
+    if (!user) throw new Error("Not authenticated");
     return dataSources.boardsAPI.createBoardWithDefaultColumns(name, user.id);
+  },
+
+  // @ts-ignore
+  addCommentToCard: async (_, { cardId, content }, { user, dataSources }) => {
+    if (!user) throw new Error("Not authenticated");
+    return dataSources.boardsAPI.addCommentToCard(cardId, content, user.id);
   },
 
   // @ts-ignore
@@ -24,6 +30,25 @@ const mutations: MutationResolvers = {
       description,
       imageUrl
     );
+  },
+
+  // @ts-ignore
+  updateCardTitle: async (_, { cardId, title }, { dataSources }) => {
+    return dataSources.boardsAPI.updateCardTitle(cardId, title);
+  },
+
+  // @ts-ignore
+  updateCardDescription: async (
+    _,
+    { cardId, description },
+    { dataSources }
+  ) => {
+    return dataSources.boardsAPI.updateCardTitle(cardId, description);
+  },
+
+  // @ts-ignore
+  updateCardImageUrl: async (_, { cardId, imageUrl }, { dataSources }) => {
+    return dataSources.boardsAPI.updateCardTitle(cardId, imageUrl);
   },
 
   // @ts-ignore
