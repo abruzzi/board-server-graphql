@@ -79,7 +79,7 @@ type Mutation {
     createCardFromComment(cardId: ID!, title: String!, description: String!): Card!
     deleteCard(cardId: ID!): Card!
 
-    # should be deprecated
+    # will be deprecated
     updateCard(cardId: ID!, title: String!, description: String!, imageUrl: String): Card!
 
     # instead use these granular ones

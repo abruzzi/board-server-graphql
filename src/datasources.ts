@@ -29,6 +29,14 @@ export class BoardsDataSource {
     });
   }
 
+  async createTag(name: string) {
+    return prisma.tag.create({
+      data: {
+        name,
+      },
+    });
+  }
+
   async getTags(): Promise<Tag[]> {
     return prisma.tag.findMany();
   }
@@ -174,6 +182,40 @@ export class BoardsDataSource {
     } else {
       throw new Error("Invalid input");
     }
+  }
+
+  async createCardFromComment(
+    cardId: string,
+    title: string,
+    description: string
+  ) {
+    const card = await prisma.card.findUnique({ where: { id: cardId } });
+    if (!card) {
+      throw new Error("Invalid card");
+    }
+
+    const largestPositionCard = await prisma.card.findFirst({
+      where: {
+        columnId: card.columnId,
+      },
+      orderBy: {
+        position: "desc",
+      },
+    });
+
+    const position = largestPositionCard
+      ? largestPositionCard.position + POSITION_STEP
+      : POSITION_STEP;
+
+    return prisma.card.create({
+      data: {
+        columnId: card.columnId,
+        title,
+        description,
+        position: position,
+      },
+      include: { column: true },
+    });
   }
 
   async deleteCard(cardId: string): Promise<Card> {

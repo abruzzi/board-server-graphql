@@ -74,6 +74,24 @@ const mutations: MutationResolvers = {
   },
 
   // @ts-ignore
+  createCardFromComment: async (
+    _,
+    { cardId, title, description },
+    { dataSources }
+  ) => {
+    return dataSources.boardsAPI.createCardFromComment(
+      cardId,
+      title,
+      description
+    );
+  },
+
+  // @ts-ignore
+  createTag: async (_, { name }, { dataSources }) => {
+    return dataSources.boardsAPI.createTag(name);
+  },
+
+  // @ts-ignore
   signUp: async (_, { email, name }, { dataSources }) => {
     return dataSources.boardsAPI.createUser(email, name);
   },
