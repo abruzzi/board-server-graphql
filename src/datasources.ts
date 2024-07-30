@@ -30,9 +30,27 @@ export class BoardsDataSource {
   }
 
   async createTag(name: string) {
+    const tag = await prisma.tag.findUnique({
+      where: { name },
+    });
+
+    // if there is a same name tag exists
+    if (tag) {
+      return tag;
+    }
+
     return prisma.tag.create({
       data: {
         name,
+      },
+    });
+  }
+
+  async addTagToCard(cardId: string, tagId: string) {
+    return prisma.cardTag.create({
+      data: {
+        cardId,
+        tagId,
       },
     });
   }
@@ -41,17 +59,7 @@ export class BoardsDataSource {
     return prisma.tag.findMany();
   }
 
-  async getBoard(id: string): Promise<
-    | (Board & {
-        columns: (Column & {
-          cards: (Card & {
-            column: Column;
-            tags: Tag[];
-          })[];
-        })[];
-      })
-    | null
-  > {
+  async getBoard(id: string) {
     return prisma.board.findUnique({
       where: { id },
       include: {
@@ -63,7 +71,11 @@ export class BoardsDataSource {
               },
               include: {
                 column: true,
-                tags: true,
+                cardTags: {
+                  include: {
+                    tag: true,
+                  },
+                },
               },
               orderBy: { position: "asc" },
             },

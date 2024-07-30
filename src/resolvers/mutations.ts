@@ -14,6 +14,11 @@ const mutations: MutationResolvers = {
   },
 
   // @ts-ignore
+  addTagToCard: (_, { cardId, tagId }, { dataSources }) => {
+    return dataSources.boardsAPI.addTagToCard(cardId, tagId);
+  },
+
+  // @ts-ignore
   removeComment: async (_, { commentId }, { dataSources }) => {
     return dataSources.boardsAPI.removeComment(commentId);
   },
@@ -22,7 +27,7 @@ const mutations: MutationResolvers = {
   deleteCard: async (_, { cardId }, { dataSources }) => {
     return dataSources.boardsAPI.softDeleteCard(cardId);
   },
-  
+
   // @ts-ignore
   updateCardTitle: async (_, { cardId, title }, { dataSources }) => {
     return dataSources.boardsAPI.updateCardTitle(cardId, title);

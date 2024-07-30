@@ -46,7 +46,6 @@ model Card {
   title       String
   description String
   imageUrl    String? // Optional field
-  tags        Tag[]     @relation("CardTags")
   comments    Comment[]
   position    Int
   columnId    String
@@ -56,12 +55,23 @@ model Card {
 
   deleted     Boolean   @default(false)
   deletedAt   DateTime?
+
+  cardTags    CardTag[]
 }
 
 model Tag {
-  id    String @id @default(uuid())
-  name  String
-  cards Card[] @relation("CardTags")
+  id    String   @id @default(uuid())
+  name  String   @unique
+  cardTags CardTag[]
+}
+
+model CardTag {
+  cardId String
+  card   Card   @relation(fields: [cardId], references: [id])
+  tagId  String
+  tag    Tag    @relation(fields: [tagId], references: [id])
+
+  @@id([cardId, tagId])
 }
 
 model Comment {
