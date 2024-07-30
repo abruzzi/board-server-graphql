@@ -20,7 +20,7 @@ const mutations: MutationResolvers = {
 
   // @ts-ignore
   deleteCard: async (_, { cardId }, { dataSources }) => {
-    return dataSources.boardsAPI.deleteCard(cardId);
+    return dataSources.boardsAPI.softDeleteCard(cardId);
   },
 
   // @ts-ignore
