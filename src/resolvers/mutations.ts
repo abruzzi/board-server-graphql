@@ -43,12 +43,12 @@ const mutations: MutationResolvers = {
     { cardId, description },
     { dataSources }
   ) => {
-    return dataSources.boardsAPI.updateCardTitle(cardId, description);
+    return dataSources.boardsAPI.updateCardDescription(cardId, description);
   },
 
   // @ts-ignore
   updateCardImageUrl: async (_, { cardId, imageUrl }, { dataSources }) => {
-    return dataSources.boardsAPI.updateCardTitle(cardId, imageUrl);
+    return dataSources.boardsAPI.updateCardImageUrl(cardId, imageUrl);
   },
 
   // @ts-ignore

@@ -62,8 +62,10 @@ export type Mutation = {
   addCommentToCard: Comment;
   addTagToCard: Card;
   createBoard: Board;
+  createCardFromComment: Card;
   createColumn: Column;
   createSimpleCard: Card;
+  createTag: Tag;
   deleteCard: Card;
   favoriteBoard: Board;
   moveCard: Card;
@@ -86,12 +88,19 @@ export type MutationAddCommentToCardArgs = {
 
 export type MutationAddTagToCardArgs = {
   cardId: Scalars['ID'];
-  tagName: Scalars['String'];
+  tagId: Scalars['ID'];
 };
 
 
 export type MutationCreateBoardArgs = {
   name: Scalars['String'];
+};
+
+
+export type MutationCreateCardFromCommentArgs = {
+  cardId: Scalars['ID'];
+  description: Scalars['String'];
+  title: Scalars['String'];
 };
 
 
@@ -105,6 +114,11 @@ export type MutationCreateColumnArgs = {
 export type MutationCreateSimpleCardArgs = {
   columnId: Scalars['ID'];
   title: Scalars['String'];
+};
+
+
+export type MutationCreateTagArgs = {
+  name: Scalars['String'];
 };
 
 
@@ -370,10 +384,12 @@ export type CommentResolvers<ContextType = BoardContext, ParentType extends Reso
 
 export type MutationResolvers<ContextType = BoardContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   addCommentToCard?: Resolver<ResolversTypes['Comment'], ParentType, ContextType, RequireFields<MutationAddCommentToCardArgs, 'cardId' | 'content'>>;
-  addTagToCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationAddTagToCardArgs, 'cardId' | 'tagName'>>;
+  addTagToCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationAddTagToCardArgs, 'cardId' | 'tagId'>>;
   createBoard?: Resolver<ResolversTypes['Board'], ParentType, ContextType, RequireFields<MutationCreateBoardArgs, 'name'>>;
+  createCardFromComment?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationCreateCardFromCommentArgs, 'cardId' | 'description' | 'title'>>;
   createColumn?: Resolver<ResolversTypes['Column'], ParentType, ContextType, RequireFields<MutationCreateColumnArgs, 'boardId' | 'name' | 'position'>>;
   createSimpleCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationCreateSimpleCardArgs, 'columnId' | 'title'>>;
+  createTag?: Resolver<ResolversTypes['Tag'], ParentType, ContextType, RequireFields<MutationCreateTagArgs, 'name'>>;
   deleteCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationDeleteCardArgs, 'cardId'>>;
   favoriteBoard?: Resolver<ResolversTypes['Board'], ParentType, ContextType, RequireFields<MutationFavoriteBoardArgs, 'boardId'>>;
   moveCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationMoveCardArgs, 'cardId' | 'targetColumnId' | 'targetPosition'>>;
