@@ -22,21 +22,7 @@ const mutations: MutationResolvers = {
   deleteCard: async (_, { cardId }, { dataSources }) => {
     return dataSources.boardsAPI.softDeleteCard(cardId);
   },
-
-  // @ts-ignore
-  updateCard: async (
-    _,
-    { cardId, title, description, imageUrl },
-    { dataSources }
-  ) => {
-    return dataSources.boardsAPI.updateCard(
-      cardId,
-      title,
-      description,
-      imageUrl
-    );
-  },
-
+  
   // @ts-ignore
   updateCardTitle: async (_, { cardId, title }, { dataSources }) => {
     return dataSources.boardsAPI.updateCardTitle(cardId, title);

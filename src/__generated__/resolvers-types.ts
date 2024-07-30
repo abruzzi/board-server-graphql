@@ -74,7 +74,6 @@ export type Mutation = {
   signIn?: Maybe<User>;
   signUp?: Maybe<User>;
   unfavoriteBoard: Board;
-  updateCard: Card;
   updateCardDescription: Card;
   updateCardImageUrl: Card;
   updateCardTitle: Card;
@@ -164,14 +163,6 @@ export type MutationSignUpArgs = {
 
 export type MutationUnfavoriteBoardArgs = {
   boardId: Scalars['ID'];
-};
-
-
-export type MutationUpdateCardArgs = {
-  cardId: Scalars['ID'];
-  description: Scalars['String'];
-  imageUrl?: InputMaybe<Scalars['String']>;
-  title: Scalars['String'];
 };
 
 
@@ -404,7 +395,6 @@ export type MutationResolvers<ContextType = BoardContext, ParentType extends Res
   signIn?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationSignInArgs, 'email'>>;
   signUp?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationSignUpArgs, 'email'>>;
   unfavoriteBoard?: Resolver<ResolversTypes['Board'], ParentType, ContextType, RequireFields<MutationUnfavoriteBoardArgs, 'boardId'>>;
-  updateCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationUpdateCardArgs, 'cardId' | 'description' | 'title'>>;
   updateCardDescription?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationUpdateCardDescriptionArgs, 'cardId' | 'description'>>;
   updateCardImageUrl?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationUpdateCardImageUrlArgs, 'cardId' | 'imageUrl'>>;
   updateCardTitle?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationUpdateCardTitleArgs, 'cardId' | 'title'>>;

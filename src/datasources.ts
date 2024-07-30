@@ -251,29 +251,6 @@ export class BoardsDataSource {
     return prisma.comment.delete({ where: { id: commentId } });
   }
 
-  /**
-   * @deprecated will shift to the granular
-   * @param cardId
-   * @param title
-   * @param description
-   * @param imageUrl
-   */
-  async updateCard(
-    cardId: string,
-    title: string,
-    description: string,
-    imageUrl: string
-  ): Promise<Card> {
-    return prisma.card.update({
-      where: { id: cardId },
-      data: {
-        title,
-        description,
-        imageUrl,
-      },
-    });
-  }
-
   async updateCardTitle(cardId: string, title: string): Promise<Card> {
     return prisma.card.update({
       where: { id: cardId },
