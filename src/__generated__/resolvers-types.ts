@@ -69,6 +69,7 @@ export type Mutation = {
   deleteCard: Card;
   favoriteBoard: Board;
   moveCard: Card;
+  removeComment: Comment;
   removeTagFromCard: Card;
   signIn?: Maybe<User>;
   signUp?: Maybe<User>;
@@ -136,6 +137,11 @@ export type MutationMoveCardArgs = {
   cardId: Scalars['ID'];
   targetColumnId: Scalars['ID'];
   targetPosition: Scalars['Int'];
+};
+
+
+export type MutationRemoveCommentArgs = {
+  commentId: Scalars['ID'];
 };
 
 
@@ -393,6 +399,7 @@ export type MutationResolvers<ContextType = BoardContext, ParentType extends Res
   deleteCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationDeleteCardArgs, 'cardId'>>;
   favoriteBoard?: Resolver<ResolversTypes['Board'], ParentType, ContextType, RequireFields<MutationFavoriteBoardArgs, 'boardId'>>;
   moveCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationMoveCardArgs, 'cardId' | 'targetColumnId' | 'targetPosition'>>;
+  removeComment?: Resolver<ResolversTypes['Comment'], ParentType, ContextType, RequireFields<MutationRemoveCommentArgs, 'commentId'>>;
   removeTagFromCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationRemoveTagFromCardArgs, 'cardId' | 'tagId'>>;
   signIn?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationSignInArgs, 'email'>>;
   signUp?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationSignUpArgs, 'email'>>;

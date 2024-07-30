@@ -14,6 +14,11 @@ const mutations: MutationResolvers = {
   },
 
   // @ts-ignore
+  removeComment: async (_, { commentId }, { dataSources }) => {
+    return dataSources.boardsAPI.removeComment(commentId);
+  },
+
+  // @ts-ignore
   deleteCard: async (_, { cardId }, { dataSources }) => {
     return dataSources.boardsAPI.deleteCard(cardId);
   },

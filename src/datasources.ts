@@ -218,6 +218,16 @@ export class BoardsDataSource {
     });
   }
 
+  // async softDeleteCard(cardId: string): Promise<Card> {
+  //   return prisma.card.update({
+  //     where: { id: cardId },
+  //     data: {
+  //       deleted: true,
+  //       deletedAt: new Date(),
+  //     }
+  //   });
+  // }
+
   async deleteCard(cardId: string): Promise<Card> {
     return prisma.card.delete({
       where: { id: cardId },
@@ -232,6 +242,10 @@ export class BoardsDataSource {
         user: { connect: { id: userId } },
       },
     });
+  }
+
+  async removeComment(commentId: string) {
+    return prisma.comment.delete({ where: { id: commentId } });
   }
 
   /**

@@ -92,5 +92,7 @@ type Mutation {
     createTag(name: String!): Tag!
     addTagToCard(cardId: ID!, tagId: ID!): Card!
     removeTagFromCard(cardId: ID!, tagId: ID!): Card!
+
     addCommentToCard(cardId: ID!, content: String!): Comment!
+    removeComment(commentId: ID!): Comment!
 }
