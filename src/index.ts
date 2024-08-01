@@ -85,7 +85,8 @@ async function startServer() {
       });
 
       const payload = ticket.getPayload();
-      const { email, name } = payload;
+      const { email, name, picture } = payload;
+      console.log(picture);
 
       // Check if user exists in your database
       let user = await boardsAPI.getUserByEmail(email);

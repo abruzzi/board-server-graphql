@@ -8,6 +8,18 @@ const mutations: MutationResolvers = {
   },
 
   // @ts-ignore
+  favoriteBoard: async (_, { boardId }, { user, dataSources }) => {
+    if (!user) throw new Error("Not authenticated");
+    return dataSources.boardsAPI.favoriteBoard(boardId, user.id);
+  },
+
+  // @ts-ignore
+  unfavoriteBoard: async (_, { boardId }, { user, dataSources }) => {
+    if (!user) throw new Error("Not authenticated");
+    return dataSources.boardsAPI.unfavoriteBoard(boardId, user.id);
+  },
+
+  // @ts-ignore
   addCommentToCard: async (_, { cardId, content }, { user, dataSources }) => {
     if (!user) throw new Error("Not authenticated");
     return dataSources.boardsAPI.addCommentToCard(cardId, content, user.id);

@@ -8,7 +8,12 @@ const POSITION_STEP = 100;
 
 export class BoardsDataSource {
   async getUser(id: string): Promise<User> {
-    return prisma.user.findUnique({ where: { id } });
+    return prisma.user.findUnique({
+      where: { id },
+      include: {
+        favorites: true,
+      },
+    });
   }
 
   async getUserByEmail(email: string): Promise<User> {
@@ -70,15 +75,41 @@ export class BoardsDataSource {
                 deleted: false,
               },
               include: {
+                tags: true,
                 column: true,
-                cardTags: {
-                  include: {
-                    tag: true,
-                  },
-                },
               },
               orderBy: { position: "asc" },
             },
+          },
+        },
+      },
+    });
+  }
+
+  async favoriteBoard(boardId: string, userId: string) {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+
+    return prisma.board.update({
+      where: { id: boardId },
+      data: {
+        favoritedBy: {
+          connect: {
+            id: user.id,
+          },
+        },
+      },
+    });
+  }
+
+  async unfavoriteBoard(boardId: string, userId: string) {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+
+    return prisma.board.update({
+      where: { id: boardId },
+      data: {
+        favoritedBy: {
+          disconnect: {
+            id: user.id,
           },
         },
       },
