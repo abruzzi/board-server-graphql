@@ -32,6 +32,11 @@ const queries: QueryResolvers = {
   },
 
   // @ts-ignore
+  card: async (_, { id }, { dataSources }) => {
+    return dataSources.boardsAPI.getCard(id);
+  },
+
+  // @ts-ignore
   column: async (_, { id }, { dataSources }) => {
     return dataSources.boardsAPI.getColumn(id);
   },

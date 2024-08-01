@@ -59,6 +59,7 @@ type Query {
     boards: [Board!]!
     board(id: ID!): Board!
     column(id: ID!): Column!
+    card(id: ID!): Card!
     node(id: ID!): Node
     currentUser: User
     tags: [Tag!]!

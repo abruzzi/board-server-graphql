@@ -52,12 +52,14 @@ export class BoardsDataSource {
   }
 
   async addTagToCard(cardId: string, tagId: string) {
-    return prisma.cardTag.create({
+    await prisma.cardTag.create({
       data: {
         cardId,
         tagId,
       },
     });
+
+    return prisma.card.findUnique({ where: { id: cardId } });
   }
 
   async getTags(): Promise<Tag[]> {
@@ -65,7 +67,7 @@ export class BoardsDataSource {
   }
 
   async getBoard(id: string) {
-    return prisma.board.findUnique({
+    const board = await prisma.board.findUnique({
       where: { id },
       include: {
         columns: {
@@ -75,7 +77,11 @@ export class BoardsDataSource {
                 deleted: false,
               },
               include: {
-                tags: true,
+                tags: {
+                  include: {
+                    tag: true,
+                  },
+                },
                 column: true,
               },
               orderBy: { position: "asc" },
@@ -84,6 +90,18 @@ export class BoardsDataSource {
         },
       },
     });
+
+    // Transform the data to match GraphQL schema expectations
+    return {
+      ...board,
+      columns: board.columns.map((column) => ({
+        ...column,
+        cards: column.cards.map((card) => ({
+          ...card,
+          tags: card.tags.map((tagConnection) => tagConnection.tag),
+        })),
+      })),
+    };
   }
 
   async favoriteBoard(boardId: string, userId: string) {
@@ -133,6 +151,18 @@ export class BoardsDataSource {
         },
       },
     });
+  }
+
+  async getCard(id: string) {
+    const card = await prisma.card.findUnique({
+      where: { id },
+      include: { tags: { include: { tag: true } } },
+    });
+
+    return {
+      ...card,
+      tags: card.tags.map((tagConnection) => tagConnection.tag),
+    };
   }
 
   async createBoardWithDefaultColumns(name: string, userId: string) {

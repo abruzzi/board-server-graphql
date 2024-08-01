@@ -191,6 +191,7 @@ export type Query = {
   __typename?: 'Query';
   board: Board;
   boards: Array<Board>;
+  card: Card;
   column: Column;
   comments: Array<Comment>;
   currentUser?: Maybe<User>;
@@ -200,6 +201,11 @@ export type Query = {
 
 
 export type QueryBoardArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryCardArgs = {
   id: Scalars['ID'];
 };
 
@@ -408,6 +414,7 @@ export type NodeResolvers<ContextType = BoardContext, ParentType extends Resolve
 export type QueryResolvers<ContextType = BoardContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   board?: Resolver<ResolversTypes['Board'], ParentType, ContextType, RequireFields<QueryBoardArgs, 'id'>>;
   boards?: Resolver<Array<ResolversTypes['Board']>, ParentType, ContextType>;
+  card?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<QueryCardArgs, 'id'>>;
   column?: Resolver<ResolversTypes['Column'], ParentType, ContextType, RequireFields<QueryColumnArgs, 'id'>>;
   comments?: Resolver<Array<ResolversTypes['Comment']>, ParentType, ContextType, RequireFields<QueryCommentsArgs, 'cardId'>>;
   currentUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
