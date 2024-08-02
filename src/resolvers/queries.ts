@@ -17,6 +17,12 @@ const queries: QueryResolvers = {
   },
 
   // @ts-ignore
+  collaborateBoards: async (_, __, { user, dataSources }) => {
+    if (!user) throw new Error("Not authenticated");
+    return dataSources.boardsAPI.getCollaborateBoards(user.id);
+  },
+
+  // @ts-ignore
   board: async (_, { id }, { dataSources }) => {
     return dataSources.boardsAPI.getBoard(id);
   },

@@ -59,6 +59,7 @@ type Column implements Node {
 
 type Query {
     boards: [Board!]!
+    collaborateBoards: [Board]!
     board(id: ID!): Board!
     collaborators(boardId: ID!): [User!]!
     column(id: ID!): Column!

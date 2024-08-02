@@ -244,6 +244,21 @@ export class BoardsDataSource {
     });
   }
 
+  async getCollaborateBoards(userId: string) {
+    return prisma.board.findMany({
+      where: {
+        collaborators: {
+          some: {
+            userId: userId,
+          },
+        },
+      },
+      include: {
+        collaborators: true,
+      },
+    });
+  }
+
   async createColumn(boardId: string, name: string, position: number) {
     return prisma.column.create({
       data: { boardId, name, position },

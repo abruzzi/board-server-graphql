@@ -193,6 +193,7 @@ export type Query = {
   board: Board;
   boards: Array<Board>;
   card: Card;
+  collaborateBoards: Array<Maybe<Board>>;
   collaborators: Array<User>;
   column: Column;
   comments: Array<Comment>;
@@ -424,6 +425,7 @@ export type QueryResolvers<ContextType = BoardContext, ParentType extends Resolv
   board?: Resolver<ResolversTypes['Board'], ParentType, ContextType, RequireFields<QueryBoardArgs, 'id'>>;
   boards?: Resolver<Array<ResolversTypes['Board']>, ParentType, ContextType>;
   card?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<QueryCardArgs, 'id'>>;
+  collaborateBoards?: Resolver<Array<Maybe<ResolversTypes['Board']>>, ParentType, ContextType>;
   collaborators?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryCollaboratorsArgs, 'boardId'>>;
   column?: Resolver<ResolversTypes['Column'], ParentType, ContextType, RequireFields<QueryColumnArgs, 'id'>>;
   comments?: Resolver<Array<ResolversTypes['Comment']>, ParentType, ContextType, RequireFields<QueryCommentsArgs, 'cardId'>>;
