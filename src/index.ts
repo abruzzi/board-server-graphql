@@ -14,7 +14,6 @@ import { expressMiddleware } from "@apollo/server/express4";
 import { OAuth2Client } from "google-auth-library";
 import { getUser, User } from "./get-user.js";
 import jwt from "jsonwebtoken";
-import * as console from "console";
 
 const typeDefs = readFileSync("./schema.graphql", { encoding: "utf-8" });
 
@@ -165,7 +164,7 @@ async function startServer() {
     }
   });
 
-  app.post("/accept-invitation", async (req, res, next) => {
+  app.post("/accept-invitation", express.json(), async (req, res, next) => {
     try {
       const authHeader = req.headers.authorization || "";
       const token = authHeader.split(" ")[1];
