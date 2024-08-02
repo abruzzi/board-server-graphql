@@ -259,6 +259,21 @@ export class BoardsDataSource {
     });
   }
 
+  async getFavoriteBoards(userId: string) {
+    return prisma.board.findMany({
+      where: {
+        favoritedBy: {
+          some: {
+            id: userId,
+          },
+        },
+      },
+      include: {
+        favoritedBy: true,
+      },
+    });
+  }
+
   async createColumn(boardId: string, name: string, position: number) {
     return prisma.column.create({
       data: { boardId, name, position },

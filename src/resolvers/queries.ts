@@ -23,6 +23,12 @@ const queries: QueryResolvers = {
   },
 
   // @ts-ignore
+  favoriteBoards: async (_, __, { user, dataSources }) => {
+    if (!user) throw new Error("Not authenticated");
+    return dataSources.boardsAPI.getFavoriteBoards(user.id);
+  },
+
+  // @ts-ignore
   board: async (_, { id }, { dataSources }) => {
     return dataSources.boardsAPI.getBoard(id);
   },

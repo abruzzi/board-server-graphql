@@ -198,6 +198,7 @@ export type Query = {
   column: Column;
   comments: Array<Comment>;
   currentUser?: Maybe<User>;
+  favoriteBoards: Array<Maybe<Board>>;
   node?: Maybe<Node>;
   tags: Array<Tag>;
 };
@@ -430,6 +431,7 @@ export type QueryResolvers<ContextType = BoardContext, ParentType extends Resolv
   column?: Resolver<ResolversTypes['Column'], ParentType, ContextType, RequireFields<QueryColumnArgs, 'id'>>;
   comments?: Resolver<Array<ResolversTypes['Comment']>, ParentType, ContextType, RequireFields<QueryCommentsArgs, 'cardId'>>;
   currentUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  favoriteBoards?: Resolver<Array<Maybe<ResolversTypes['Board']>>, ParentType, ContextType>;
   node?: Resolver<Maybe<ResolversTypes['Node']>, ParentType, ContextType, RequireFields<QueryNodeArgs, 'id'>>;
   tags?: Resolver<Array<ResolversTypes['Tag']>, ParentType, ContextType>;
 }>;
