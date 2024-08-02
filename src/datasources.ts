@@ -1,5 +1,6 @@
-import { PrismaClient } from "@prisma/client";
+import { Invitation, PrismaClient } from "@prisma/client";
 import { Card, Board, Column, User, Comment, Tag } from "@prisma/client";
+import { v4 as uuid } from "uuid";
 
 const prisma = new PrismaClient();
 
@@ -66,6 +67,39 @@ export class BoardsDataSource {
     return prisma.tag.findMany();
   }
 
+  async findInvitation(token: string) {
+    return prisma.invitation.findUnique({
+      where: { token: token },
+      include: { board: true },
+    });
+  }
+
+  async addUserToBoard(invitation: Invitation, userId: string) {
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      throw new Error("user does not exist");
+    }
+
+    await prisma.collaborator.create({
+      data: {
+        userId: userId,
+        boardId: invitation.boardId,
+      },
+    });
+
+    await prisma.invitation.update({
+      where: { token: invitation.token },
+      data: { status: "accepted" },
+    });
+
+    return prisma.board.findUnique({ where: { id: invitation.boardId } });
+  }
+
   async getBoard(id: string) {
     const board = await prisma.board.findUnique({
       where: { id },
@@ -102,6 +136,17 @@ export class BoardsDataSource {
         })),
       })),
     };
+  }
+
+  async createInvitation(email: string, boardId: string) {
+    const token = uuid();
+    return prisma.invitation.create({
+      data: {
+        email: email,
+        token: token,
+        boardId: boardId,
+      },
+    });
   }
 
   async favoriteBoard(boardId: string, userId: string) {

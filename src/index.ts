@@ -1,4 +1,5 @@
 import { ApolloServer } from "@apollo/server";
+import { v4 as uuid } from "uuid";
 
 import resolvers from "./resolvers/index.js";
 import { BoardsDataSource } from "./datasources.js";
@@ -7,11 +8,13 @@ import { readFileSync } from "fs";
 import express from "express";
 import http from "http";
 import cors from "cors";
+import nodemailer from "nodemailer";
 
 import { expressMiddleware } from "@apollo/server/express4";
 import { OAuth2Client } from "google-auth-library";
 import { getUser, User } from "./get-user.js";
 import jwt from "jsonwebtoken";
+import * as console from "console";
 
 const typeDefs = readFileSync("./schema.graphql", { encoding: "utf-8" });
 
@@ -35,6 +38,31 @@ const corsOptions = {
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
 };
+
+async function sendInvitationEmail(
+  to: string,
+  boardName: string,
+  invitationLink: string
+) {
+  const transporter = nodemailer.createTransport({
+    host: "smtp.office365.com",
+    port: 587,
+    secure: false, // use TLS
+    auth: {
+      user: process.env.INVITE_EMAIL_USER,
+      pass: process.env.INVITE_EMAIL_PASS,
+    },
+  });
+
+  const info = await transporter.sendMail({
+    from: `"Board Collaboration" <${process.env.INVITE_EMAIL_USER}>`,
+    to: to,
+    subject: "Invitation to collaborate on a board",
+    text: `You have been invited to collaborate on the board "${boardName}". Click the link to join: ${invitationLink}`,
+  });
+
+  console.log("Message sent: %s", info.messageId);
+}
 
 async function startServer() {
   const app = express();
@@ -112,6 +140,63 @@ async function startServer() {
         error.response?.data || error.message
       );
       res.status(500).json({ error: "Failed to exchange code for tokens" });
+    }
+  });
+
+  app.post("/invite", express.json(), async (req, res, next) => {
+    try {
+      const { email, boardId } = req.body;
+
+      const board = await boardsAPI.getBoard(boardId);
+
+      if (!board) {
+        return res.status(404).json({ error: "Board not found" });
+      }
+
+      const invitation = await boardsAPI.createInvitation(email, boardId);
+      const invitationLink = `${process.env.APP_BASE_URI}/accept-invitation?token=${invitation.token}&board=${board.id}`;
+
+      await sendInvitationEmail(email, board.name, invitationLink);
+
+      res.json({ message: "Invitation sent" });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ error: "Failed to sent invitation" });
+    }
+  });
+
+  app.post("/accept-invitation", async (req, res, next) => {
+    try {
+      const authHeader = req.headers.authorization || "";
+      const token = authHeader.split(" ")[1];
+
+      const user = getUser(token);
+
+      if (!user) {
+        return res
+          .status(401)
+          .json({ error: "The user should be authenticated first" });
+      }
+
+      const { invitationToken } = req.body;
+
+      const invitation = await boardsAPI.findInvitation(invitationToken);
+
+      if (!invitation) {
+        return res.status(404).json({ error: "Invitation not found" });
+      }
+
+      if (invitation.status !== "pending") {
+        return res.status(400).json({ error: "Invitation already processed" });
+      }
+
+      const board = await boardsAPI.addUserToBoard(invitation, user.id);
+
+      // now they can use the id to navigate to the current board
+      res.json({ boardId: board.id });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ error: "Failed to accept the invitation" });
     }
   });
 

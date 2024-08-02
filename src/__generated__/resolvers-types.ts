@@ -17,6 +17,7 @@ export type Scalars = {
 
 export type Board = {
   __typename?: 'Board';
+  collaborators: Array<User>;
   columns: Array<Column>;
   favoritedBy: Array<User>;
   id: Scalars['ID'];
@@ -192,6 +193,7 @@ export type Query = {
   board: Board;
   boards: Array<Board>;
   card: Card;
+  collaborators: Array<User>;
   column: Column;
   comments: Array<Comment>;
   currentUser?: Maybe<User>;
@@ -207,6 +209,11 @@ export type QueryBoardArgs = {
 
 export type QueryCardArgs = {
   id: Scalars['ID'];
+};
+
+
+export type QueryCollaboratorsArgs = {
+  boardId: Scalars['ID'];
 };
 
 
@@ -234,6 +241,7 @@ export type Tag = {
 export type User = {
   __typename?: 'User';
   boards: Array<Board>;
+  collaborations: Array<Board>;
   comments: Array<Comment>;
   email: Scalars['String'];
   favorites: Array<Board>;
@@ -344,6 +352,7 @@ export type ResolversParentTypes = ResolversObject<{
 }>;
 
 export type BoardResolvers<ContextType = BoardContext, ParentType extends ResolversParentTypes['Board'] = ResolversParentTypes['Board']> = ResolversObject<{
+  collaborators?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
   columns?: Resolver<Array<ResolversTypes['Column']>, ParentType, ContextType>;
   favoritedBy?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
@@ -415,6 +424,7 @@ export type QueryResolvers<ContextType = BoardContext, ParentType extends Resolv
   board?: Resolver<ResolversTypes['Board'], ParentType, ContextType, RequireFields<QueryBoardArgs, 'id'>>;
   boards?: Resolver<Array<ResolversTypes['Board']>, ParentType, ContextType>;
   card?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<QueryCardArgs, 'id'>>;
+  collaborators?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryCollaboratorsArgs, 'boardId'>>;
   column?: Resolver<ResolversTypes['Column'], ParentType, ContextType, RequireFields<QueryColumnArgs, 'id'>>;
   comments?: Resolver<Array<ResolversTypes['Comment']>, ParentType, ContextType, RequireFields<QueryCommentsArgs, 'cardId'>>;
   currentUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
@@ -431,6 +441,7 @@ export type TagResolvers<ContextType = BoardContext, ParentType extends Resolver
 
 export type UserResolvers<ContextType = BoardContext, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = ResolversObject<{
   boards?: Resolver<Array<ResolversTypes['Board']>, ParentType, ContextType>;
+  collaborations?: Resolver<Array<ResolversTypes['Board']>, ParentType, ContextType>;
   comments?: Resolver<Array<ResolversTypes['Comment']>, ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   favorites?: Resolver<Array<ResolversTypes['Board']>, ParentType, ContextType>;
