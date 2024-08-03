@@ -26,22 +26,26 @@ const mutations: MutationResolvers = {
   },
 
   // @ts-ignore
-  addTagToCard: (_, { cardId, tagId }, { dataSources }) => {
+  addTagToCard: (_, { cardId, tagId }, { user, dataSources }) => {
+    if (!user) throw new Error("Not authenticated");
     return dataSources.boardsAPI.addTagToCard(cardId, tagId);
   },
 
   // @ts-ignore
-  removeComment: async (_, { commentId }, { dataSources }) => {
+  removeComment: async (_, { commentId }, { user, dataSources }) => {
+    if (!user) throw new Error("Not authenticated");
     return dataSources.boardsAPI.removeComment(commentId);
   },
 
   // @ts-ignore
-  deleteCard: async (_, { cardId }, { dataSources }) => {
+  deleteCard: async (_, { cardId }, { user, dataSources }) => {
+    if (!user) throw new Error("Not authenticated");
     return dataSources.boardsAPI.softDeleteCard(cardId);
   },
 
   // @ts-ignore
-  updateCardTitle: async (_, { cardId, title }, { dataSources }) => {
+  updateCardTitle: async (_, { cardId, title }, { user, dataSources }) => {
+    if (!user) throw new Error("Not authenticated");
     return dataSources.boardsAPI.updateCardTitle(cardId, title);
   },
 
@@ -49,22 +53,34 @@ const mutations: MutationResolvers = {
   updateCardDescription: async (
     _,
     { cardId, description },
-    { dataSources }
+    { user, dataSources }
   ) => {
+    if (!user) throw new Error("Not authenticated");
     return dataSources.boardsAPI.updateCardDescription(cardId, description);
   },
 
   // @ts-ignore
-  updateCardImageUrl: async (_, { cardId, imageUrl }, { dataSources }) => {
+  updateCardImageUrl: async (
+    _,
+    { cardId, imageUrl },
+    { user, dataSources }
+  ) => {
+    if (!user) throw new Error("Not authenticated");
     return dataSources.boardsAPI.updateCardImageUrl(cardId, imageUrl);
   },
 
   // @ts-ignore
-  createSimpleCard: async (_, { columnId, title }, { dataSources }) => {
+  createSimpleCard: async (_, { columnId, title }, { user, dataSources }) => {
+    if (!user) throw new Error("Not authenticated");
     return dataSources.boardsAPI.createSimpleCard(columnId, title);
   },
   // @ts-ignore
-  createColumn: async (_, { boardId, name, position }, { dataSources }) => {
+  createColumn: async (
+    _,
+    { boardId, name, position },
+    { user, dataSources }
+  ) => {
+    if (!user) throw new Error("Not authenticated");
     return dataSources.boardsAPI.createColumn(boardId, name, position);
   },
 
@@ -72,8 +88,9 @@ const mutations: MutationResolvers = {
   moveCard: async (
     _,
     { cardId, targetColumnId, targetPosition },
-    { dataSources }
+    { user, dataSources }
   ) => {
+    if (!user) throw new Error("Not authenticated");
     return dataSources.boardsAPI.moveCard(
       cardId,
       targetColumnId,
@@ -85,8 +102,9 @@ const mutations: MutationResolvers = {
   createCardFromComment: async (
     _,
     { cardId, title, description },
-    { dataSources }
+    { user, dataSources }
   ) => {
+    if (!user) throw new Error("Not authenticated");
     return dataSources.boardsAPI.createCardFromComment(
       cardId,
       title,
@@ -95,7 +113,8 @@ const mutations: MutationResolvers = {
   },
 
   // @ts-ignore
-  createTag: async (_, { name }, { dataSources }) => {
+  createTag: async (_, { name }, { user, dataSources }) => {
+    if (!user) throw new Error("Not authenticated");
     return dataSources.boardsAPI.createTag(name);
   },
 };

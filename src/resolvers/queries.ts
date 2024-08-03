@@ -29,32 +29,38 @@ const queries: QueryResolvers = {
   },
 
   // @ts-ignore
-  board: async (_, { id }, { dataSources }) => {
+  board: async (_, { id }, { user, dataSources }) => {
+    if (!user) throw new Error("Not authenticated");
     return dataSources.boardsAPI.getBoard(id);
   },
 
   // @ts-ignore
-  comments: async (_, { cardId }, { dataSources }) => {
+  comments: async (_, { cardId }, { user, dataSources }) => {
+    if (!user) throw new Error("Not authenticated");
     return dataSources.boardsAPI.getComments(cardId);
   },
 
   // @ts-ignore
-  tags: async (_, {}, { dataSources }) => {
+  tags: async (_, {}, { user, dataSources }) => {
+    if (!user) throw new Error("Not authenticated");
     return dataSources.boardsAPI.getTags();
   },
 
   // @ts-ignore
-  card: async (_, { id }, { dataSources }) => {
+  card: async (_, { id }, { user, dataSources }) => {
+    if (!user) throw new Error("Not authenticated");
     return dataSources.boardsAPI.getCard(id);
   },
 
   // @ts-ignore
-  column: async (_, { id }, { dataSources }) => {
+  column: async (_, { id }, { user, dataSources }) => {
+    if (!user) throw new Error("Not authenticated");
     return dataSources.boardsAPI.getColumn(id);
   },
 
   // @ts-ignore
-  node: async (_, { id }, { dataSources }) => {
+  node: async (_, { id }, { user, dataSources }) => {
+    if (!user) throw new Error("Not authenticated");
     return dataSources.boardsAPI.getColumn(id);
   },
 };
