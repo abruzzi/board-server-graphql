@@ -164,6 +164,14 @@ export class BoardsDataSource {
     });
   }
 
+  async updateBoardImageUrl(boardId: string, imageUrl: string) {
+    return prisma.board.update({ where: { id: boardId }, data: { imageUrl } });
+  }
+
+  async updateBoardName(boardId: string, name: string) {
+    return prisma.board.update({ where: { id: boardId }, data: { name } });
+  }
+
   async unfavoriteBoard(boardId: string, userId: string) {
     const user = await prisma.user.findUnique({ where: { id: userId } });
 

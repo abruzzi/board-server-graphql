@@ -14,6 +14,22 @@ const mutations: MutationResolvers = {
   },
 
   // @ts-ignore
+  updateBoardImageUrl: async (
+    _,
+    { boardId, imageUrl },
+    { user, dataSources }
+  ) => {
+    if (!user) throw new Error("Not authenticated");
+    return dataSources.boardsAPI.updateBoardImageUrl(boardId, imageUrl);
+  },
+
+  // @ts-ignore
+  updateBoardName: async (_, { boardId, name }, { user, dataSources }) => {
+    if (!user) throw new Error("Not authenticated");
+    return dataSources.boardsAPI.updateBoardName(boardId, name);
+  },
+
+  // @ts-ignore
   unfavoriteBoard: async (_, { boardId }, { user, dataSources }) => {
     if (!user) throw new Error("Not authenticated");
     return dataSources.boardsAPI.unfavoriteBoard(boardId, user.id);
