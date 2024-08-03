@@ -113,17 +113,16 @@ async function startServer() {
 
       const payload = ticket.getPayload();
       const { email, name, picture } = payload;
-      console.log(picture);
 
       // Check if user exists in your database
       let user = await boardsAPI.getUserByEmail(email);
 
       if (!user) {
         // User doesn't exist, create a new account
-        user = await boardsAPI.createUser(email, name);
+        user = await boardsAPI.createUser(email, name, picture);
       } else {
         // User exists, update their information if necessary
-        user = await boardsAPI.updateUser(user.id, email, name);
+        user = await boardsAPI.updateUser(user.id, name, picture);
       }
 
       // Create a JWT token for your app

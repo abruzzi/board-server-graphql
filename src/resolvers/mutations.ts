@@ -98,16 +98,6 @@ const mutations: MutationResolvers = {
   createTag: async (_, { name }, { dataSources }) => {
     return dataSources.boardsAPI.createTag(name);
   },
-
-  // @ts-ignore
-  signUp: async (_, { email, name }, { dataSources }) => {
-    return dataSources.boardsAPI.createUser(email, name);
-  },
-
-  // @ts-ignore
-  signIn: async (_, { email }, { dataSources }) => {
-    return dataSources.boardsAPI.signIn(email);
-  },
 };
 
 export default mutations;

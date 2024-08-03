@@ -280,20 +280,20 @@ export class BoardsDataSource {
     });
   }
 
-  async createUser(email: string, name: string) {
+  async createUser(email: string, name: string, avatarUrl: string) {
     return prisma.user.create({
-      data: { name, email },
+      data: { name, email, avatarUrl },
     });
   }
 
-  async updateUser(id: string, email: string, name: string) {
+  async updateUser(id: string, name: string, avatarUrl: string) {
     return prisma.user.update({
       where: {
         id,
       },
       data: {
-        email,
         name,
+        avatarUrl,
       },
     });
   }

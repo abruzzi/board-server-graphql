@@ -72,9 +72,6 @@ type Query {
 }
 
 type Mutation {
-    signUp(email: String!, name: String): User
-    signIn(email: String!): User
-
     createBoard(name: String!): Board!
     favoriteBoard(boardId: ID!): Board!
     unfavoriteBoard(boardId: ID!): Board!
