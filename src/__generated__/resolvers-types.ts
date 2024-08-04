@@ -69,11 +69,10 @@ export type Mutation = {
   createSimpleCard: Card;
   createTag: Tag;
   deleteCard: Card;
-  favoriteBoard: Board;
   moveCard: Card;
   removeComment: Comment;
   removeTagFromCard: Card;
-  unfavoriteBoard: Board;
+  toggleFavoriteBoard: Board;
   updateBoardImageUrl: Board;
   updateBoardName: Board;
   updateCardDescription: Card;
@@ -129,11 +128,6 @@ export type MutationDeleteCardArgs = {
 };
 
 
-export type MutationFavoriteBoardArgs = {
-  boardId: Scalars['ID'];
-};
-
-
 export type MutationMoveCardArgs = {
   cardId: Scalars['ID'];
   targetColumnId: Scalars['ID'];
@@ -152,7 +146,7 @@ export type MutationRemoveTagFromCardArgs = {
 };
 
 
-export type MutationUnfavoriteBoardArgs = {
+export type MutationToggleFavoriteBoardArgs = {
   boardId: Scalars['ID'];
 };
 
@@ -409,11 +403,10 @@ export type MutationResolvers<ContextType = BoardContext, ParentType extends Res
   createSimpleCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationCreateSimpleCardArgs, 'columnId' | 'title'>>;
   createTag?: Resolver<ResolversTypes['Tag'], ParentType, ContextType, RequireFields<MutationCreateTagArgs, 'name'>>;
   deleteCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationDeleteCardArgs, 'cardId'>>;
-  favoriteBoard?: Resolver<ResolversTypes['Board'], ParentType, ContextType, RequireFields<MutationFavoriteBoardArgs, 'boardId'>>;
   moveCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationMoveCardArgs, 'cardId' | 'targetColumnId' | 'targetPosition'>>;
   removeComment?: Resolver<ResolversTypes['Comment'], ParentType, ContextType, RequireFields<MutationRemoveCommentArgs, 'commentId'>>;
   removeTagFromCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationRemoveTagFromCardArgs, 'cardId' | 'tagId'>>;
-  unfavoriteBoard?: Resolver<ResolversTypes['Board'], ParentType, ContextType, RequireFields<MutationUnfavoriteBoardArgs, 'boardId'>>;
+  toggleFavoriteBoard?: Resolver<ResolversTypes['Board'], ParentType, ContextType, RequireFields<MutationToggleFavoriteBoardArgs, 'boardId'>>;
   updateBoardImageUrl?: Resolver<ResolversTypes['Board'], ParentType, ContextType, RequireFields<MutationUpdateBoardImageUrlArgs, 'boardId' | 'imageUrl'>>;
   updateBoardName?: Resolver<ResolversTypes['Board'], ParentType, ContextType, RequireFields<MutationUpdateBoardNameArgs, 'boardId' | 'name'>>;
   updateCardDescription?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationUpdateCardDescriptionArgs, 'cardId' | 'description'>>;

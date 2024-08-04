@@ -149,21 +149,6 @@ export class BoardsDataSource {
     });
   }
 
-  async favoriteBoard(boardId: string, userId: string) {
-    const user = await prisma.user.findUnique({ where: { id: userId } });
-
-    return prisma.board.update({
-      where: { id: boardId },
-      data: {
-        favoritedBy: {
-          connect: {
-            id: user.id,
-          },
-        },
-      },
-    });
-  }
-
   async updateBoardImageUrl(boardId: string, imageUrl: string) {
     return prisma.board.update({ where: { id: boardId }, data: { imageUrl } });
   }
@@ -172,19 +157,37 @@ export class BoardsDataSource {
     return prisma.board.update({ where: { id: boardId }, data: { name } });
   }
 
-  async unfavoriteBoard(boardId: string, userId: string) {
-    const user = await prisma.user.findUnique({ where: { id: userId } });
+  async toggleFavoriteBoard(boardId: string, userId: string) {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { favorites: true },
+    });
 
-    return prisma.board.update({
-      where: { id: boardId },
-      data: {
-        favoritedBy: {
-          disconnect: {
-            id: user.id,
+    const isFavorite = user.favorites.some((board) => board.id === boardId);
+
+    if (isFavorite) {
+      return prisma.board.update({
+        where: { id: boardId },
+        data: {
+          favoritedBy: {
+            disconnect: {
+              id: user.id,
+            },
           },
         },
-      },
-    });
+      });
+    } else {
+      return prisma.board.update({
+        where: { id: boardId },
+        data: {
+          favoritedBy: {
+            connect: {
+              id: user.id,
+            },
+          },
+        },
+      });
+    }
   }
 
   async getColumn(id: string): Promise<

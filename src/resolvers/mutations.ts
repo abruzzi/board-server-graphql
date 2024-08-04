@@ -8,12 +8,6 @@ const mutations: MutationResolvers = {
   },
 
   // @ts-ignore
-  favoriteBoard: async (_, { boardId }, { user, dataSources }) => {
-    if (!user) throw new Error("Not authenticated");
-    return dataSources.boardsAPI.favoriteBoard(boardId, user.id);
-  },
-
-  // @ts-ignore
   updateBoardImageUrl: async (
     _,
     { boardId, imageUrl },
@@ -30,9 +24,9 @@ const mutations: MutationResolvers = {
   },
 
   // @ts-ignore
-  unfavoriteBoard: async (_, { boardId }, { user, dataSources }) => {
+  toggleFavoriteBoard: async (_, { boardId }, { user, dataSources }) => {
     if (!user) throw new Error("Not authenticated");
-    return dataSources.boardsAPI.unfavoriteBoard(boardId, user.id);
+    return dataSources.boardsAPI.toggleFavoriteBoard(boardId, user.id);
   },
 
   // @ts-ignore
