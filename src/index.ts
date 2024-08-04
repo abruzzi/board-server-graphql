@@ -1,5 +1,4 @@
 import { ApolloServer } from "@apollo/server";
-import { v4 as uuid } from "uuid";
 
 import resolvers from "./resolvers/index.js";
 import { BoardsDataSource } from "./datasources.js";
@@ -8,12 +7,12 @@ import { readFileSync } from "fs";
 import express from "express";
 import http from "http";
 import cors from "cors";
-import nodemailer from "nodemailer";
 
 import { expressMiddleware } from "@apollo/server/express4";
 import { OAuth2Client } from "google-auth-library";
 import { getUser, User } from "./get-user.js";
 import jwt from "jsonwebtoken";
+import { sendInvitationEmail } from "./sendInvitationEmail";
 
 const typeDefs = readFileSync("./schema.graphql", { encoding: "utf-8" });
 
@@ -37,31 +36,6 @@ const corsOptions = {
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
 };
-
-async function sendInvitationEmail(
-  to: string,
-  boardName: string,
-  invitationLink: string
-) {
-  const transporter = nodemailer.createTransport({
-    host: "smtp.office365.com",
-    port: 587,
-    secure: false, // use TLS
-    auth: {
-      user: process.env.INVITE_EMAIL_USER,
-      pass: process.env.INVITE_EMAIL_PASS,
-    },
-  });
-
-  const info = await transporter.sendMail({
-    from: `"Board Collaboration" <${process.env.INVITE_EMAIL_USER}>`,
-    to: to,
-    subject: "Invitation to collaborate on a board",
-    text: `You have been invited to collaborate on the board "${boardName}". Click the link to join: ${invitationLink}`,
-  });
-
-  console.log("Message sent: %s", info.messageId);
-}
 
 async function startServer() {
   const app = express();
