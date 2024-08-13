@@ -12,7 +12,7 @@ import { expressMiddleware } from "@apollo/server/express4";
 import { OAuth2Client } from "google-auth-library";
 import { getUser, User } from "./get-user.js";
 import jwt from "jsonwebtoken";
-import { sendInvitationEmail } from "./sendInvitationEmail";
+import { sendInvitationEmail } from "./sendInvitationEmail.js";
 
 const typeDefs = readFileSync("./schema.graphql", { encoding: "utf-8" });
 

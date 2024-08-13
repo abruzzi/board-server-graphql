@@ -1,6 +1,16 @@
-import { Invitation, PrismaClient } from "@prisma/client";
-import { Card, Board, Column, User, Comment, Tag } from "@prisma/client";
+import {
+  Board,
+  Card,
+  Column,
+  Comment,
+  Invitation,
+  PrismaClient,
+  Tag,
+  User,
+} from "@prisma/client";
 import { v4 as uuid } from "uuid";
+import * as console from "console";
+import { CommentConnection } from "./__generated__/resolvers-types";
 
 const prisma = new PrismaClient();
 
@@ -21,11 +31,14 @@ export class BoardsDataSource {
     return prisma.user.findUnique({ where: { email } });
   }
 
-  async getComments(cardId: string): Promise<Comment[]> {
-    return prisma.comment.findMany({
+  async getComments(cardId: string, first: number, after?: string) {
+    const comments = await prisma.comment.findMany({
       where: {
         cardId: cardId,
       },
+      take: first,
+      skip: after ? 1 : 0,
+      cursor: after ? { id: after } : undefined,
       include: {
         user: true,
       },
@@ -33,6 +46,18 @@ export class BoardsDataSource {
         createdAt: "desc",
       },
     });
+
+    return {
+      edges: comments.map((comment) => ({
+        cursor: comment.id,
+        node: comment,
+      })),
+      pageInfo: {
+        endCursor:
+          comments.length > 0 ? comments[comments.length - 1].id : null,
+        hasNextPage: comments.length === first,
+      },
+    };
   }
 
   async createTag(name: string) {

@@ -35,9 +35,9 @@ const queries: QueryResolvers = {
   },
 
   // @ts-ignore
-  comments: async (_, { cardId }, { user, dataSources }) => {
+  comments: async (_, { cardId, first, after }, { user, dataSources }) => {
     if (!user) throw new Error("Not authenticated");
-    return dataSources.boardsAPI.getComments(cardId);
+    return dataSources.boardsAPI.getComments(cardId, first, after);
   },
 
   // @ts-ignore
