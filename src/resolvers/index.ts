@@ -11,6 +11,10 @@ const resolvers: Resolvers = {
         return "Column";
       }
 
+      if("name" in obj && "columns" in obj) {
+        return "Board";
+      }
+
       return null;
     },
   },

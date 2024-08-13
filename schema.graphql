@@ -13,7 +13,7 @@ type User {
     favorites: [Board!]!
 }
 
-type Board {
+type Board implements Node {
     id: ID!
     name: String!
     user: User!

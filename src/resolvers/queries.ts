@@ -61,7 +61,21 @@ const queries: QueryResolvers = {
   // @ts-ignore
   node: async (_, { id }, { user, dataSources }) => {
     if (!user) throw new Error("Not authenticated");
-    return dataSources.boardsAPI.getColumn(id);
+
+    // Try to find the node as a Column first
+    const column = await dataSources.boardsAPI.getColumn(id);
+    if (column) {
+      return column;
+    }
+
+    // If not found, try to find it as a Board
+    const board = await dataSources.boardsAPI.getBoard(id);
+    if (board) {
+      return board;
+    }
+
+    // Return null if no match is found
+    return null;
   },
 };
 

@@ -15,7 +15,7 @@ export type Scalars = {
   Float: number;
 };
 
-export type Board = {
+export type Board = Node & {
   __typename?: 'Board';
   collaborators: Array<User>;
   columns: Array<Column>;
@@ -348,7 +348,7 @@ export type ResolversTypes = ResolversObject<{
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   Mutation: ResolverTypeWrapper<{}>;
-  Node: ResolversTypes['Column'];
+  Node: ResolversTypes['Board'] | ResolversTypes['Column'];
   PageInfo: ResolverTypeWrapper<PageInfo>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']>;
@@ -368,7 +368,7 @@ export type ResolversParentTypes = ResolversObject<{
   ID: Scalars['ID'];
   Int: Scalars['Int'];
   Mutation: {};
-  Node: ResolversParentTypes['Column'];
+  Node: ResolversParentTypes['Board'] | ResolversParentTypes['Column'];
   PageInfo: PageInfo;
   Query: {};
   String: Scalars['String'];
@@ -453,7 +453,7 @@ export type MutationResolvers<ContextType = BoardContext, ParentType extends Res
 }>;
 
 export type NodeResolvers<ContextType = BoardContext, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = ResolversObject<{
-  __resolveType: TypeResolveFn<'Column', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'Board' | 'Column', ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
 }>;
 
