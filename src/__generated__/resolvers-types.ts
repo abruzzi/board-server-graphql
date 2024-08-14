@@ -26,10 +26,10 @@ export type Board = Node & {
   user: User;
 };
 
-export type Card = {
+export type Card = Node & {
   __typename?: 'Card';
   column: Column;
-  comments: Array<Comment>;
+  comments: CommentConnection;
   createdAt: Scalars['String'];
   description: Scalars['String'];
   id: Scalars['ID'];
@@ -38,6 +38,12 @@ export type Card = {
   tags: Array<Tag>;
   title: Scalars['String'];
   updatedAt: Scalars['String'];
+};
+
+
+export type CardCommentsArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
 };
 
 export type Column = Node & {
@@ -210,11 +216,11 @@ export type Query = {
   collaborateBoards: Array<Maybe<Board>>;
   collaborators: Array<User>;
   column: Column;
-  comments: CommentConnection;
   currentUser?: Maybe<User>;
   favoriteBoards: Array<Maybe<Board>>;
   node?: Maybe<Node>;
   tags: Array<Tag>;
+  viewer?: Maybe<Viewer>;
 };
 
 
@@ -238,13 +244,6 @@ export type QueryColumnArgs = {
 };
 
 
-export type QueryCommentsArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  cardId: Scalars['ID'];
-  first?: InputMaybe<Scalars['Int']>;
-};
-
-
 export type QueryNodeArgs = {
   id: Scalars['ID'];
 };
@@ -261,11 +260,16 @@ export type User = {
   avatarUrl?: Maybe<Scalars['String']>;
   boards: Array<Board>;
   collaborations: Array<Board>;
-  comments: Array<Comment>;
   email: Scalars['String'];
   favorites: Array<Board>;
   id: Scalars['ID'];
   name?: Maybe<Scalars['String']>;
+};
+
+export type Viewer = {
+  __typename?: 'Viewer';
+  favoriteBoards: Array<Maybe<Board>>;
+  user?: Maybe<User>;
 };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
@@ -348,12 +352,13 @@ export type ResolversTypes = ResolversObject<{
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   Mutation: ResolverTypeWrapper<{}>;
-  Node: ResolversTypes['Board'] | ResolversTypes['Column'];
+  Node: ResolversTypes['Board'] | ResolversTypes['Card'] | ResolversTypes['Column'];
   PageInfo: ResolverTypeWrapper<PageInfo>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']>;
   Tag: ResolverTypeWrapper<Tag>;
   User: ResolverTypeWrapper<User>;
+  Viewer: ResolverTypeWrapper<Viewer>;
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -368,12 +373,13 @@ export type ResolversParentTypes = ResolversObject<{
   ID: Scalars['ID'];
   Int: Scalars['Int'];
   Mutation: {};
-  Node: ResolversParentTypes['Board'] | ResolversParentTypes['Column'];
+  Node: ResolversParentTypes['Board'] | ResolversParentTypes['Card'] | ResolversParentTypes['Column'];
   PageInfo: PageInfo;
   Query: {};
   String: Scalars['String'];
   Tag: Tag;
   User: User;
+  Viewer: Viewer;
 }>;
 
 export type BoardResolvers<ContextType = BoardContext, ParentType extends ResolversParentTypes['Board'] = ResolversParentTypes['Board']> = ResolversObject<{
@@ -389,7 +395,7 @@ export type BoardResolvers<ContextType = BoardContext, ParentType extends Resolv
 
 export type CardResolvers<ContextType = BoardContext, ParentType extends ResolversParentTypes['Card'] = ResolversParentTypes['Card']> = ResolversObject<{
   column?: Resolver<ResolversTypes['Column'], ParentType, ContextType>;
-  comments?: Resolver<Array<ResolversTypes['Comment']>, ParentType, ContextType>;
+  comments?: Resolver<ResolversTypes['CommentConnection'], ParentType, ContextType, Partial<CardCommentsArgs>>;
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
@@ -453,7 +459,7 @@ export type MutationResolvers<ContextType = BoardContext, ParentType extends Res
 }>;
 
 export type NodeResolvers<ContextType = BoardContext, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = ResolversObject<{
-  __resolveType: TypeResolveFn<'Board' | 'Column', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'Board' | 'Card' | 'Column', ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
 }>;
 
@@ -470,11 +476,11 @@ export type QueryResolvers<ContextType = BoardContext, ParentType extends Resolv
   collaborateBoards?: Resolver<Array<Maybe<ResolversTypes['Board']>>, ParentType, ContextType>;
   collaborators?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryCollaboratorsArgs, 'boardId'>>;
   column?: Resolver<ResolversTypes['Column'], ParentType, ContextType, RequireFields<QueryColumnArgs, 'id'>>;
-  comments?: Resolver<ResolversTypes['CommentConnection'], ParentType, ContextType, RequireFields<QueryCommentsArgs, 'cardId'>>;
   currentUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   favoriteBoards?: Resolver<Array<Maybe<ResolversTypes['Board']>>, ParentType, ContextType>;
   node?: Resolver<Maybe<ResolversTypes['Node']>, ParentType, ContextType, RequireFields<QueryNodeArgs, 'id'>>;
   tags?: Resolver<Array<ResolversTypes['Tag']>, ParentType, ContextType>;
+  viewer?: Resolver<Maybe<ResolversTypes['Viewer']>, ParentType, ContextType>;
 }>;
 
 export type TagResolvers<ContextType = BoardContext, ParentType extends ResolversParentTypes['Tag'] = ResolversParentTypes['Tag']> = ResolversObject<{
@@ -488,11 +494,16 @@ export type UserResolvers<ContextType = BoardContext, ParentType extends Resolve
   avatarUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   boards?: Resolver<Array<ResolversTypes['Board']>, ParentType, ContextType>;
   collaborations?: Resolver<Array<ResolversTypes['Board']>, ParentType, ContextType>;
-  comments?: Resolver<Array<ResolversTypes['Comment']>, ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   favorites?: Resolver<Array<ResolversTypes['Board']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type ViewerResolvers<ContextType = BoardContext, ParentType extends ResolversParentTypes['Viewer'] = ResolversParentTypes['Viewer']> = ResolversObject<{
+  favoriteBoards?: Resolver<Array<Maybe<ResolversTypes['Board']>>, ParentType, ContextType>;
+  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -509,5 +520,6 @@ export type Resolvers<ContextType = BoardContext> = ResolversObject<{
   Query?: QueryResolvers<ContextType>;
   Tag?: TagResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
+  Viewer?: ViewerResolvers<ContextType>;
 }>;
 

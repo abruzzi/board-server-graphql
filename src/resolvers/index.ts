@@ -1,9 +1,10 @@
 import { Resolvers } from "../__generated__/resolvers-types";
-import Query from "./queries.js";
+import { cardResolvers, queryResolvers } from "./queries.js";
 import Mutation from "./mutations.js";
 
 const resolvers: Resolvers = {
-  Query,
+  Query: queryResolvers,
+  Card: cardResolvers,
   Mutation,
   Node: {
     __resolveType(obj, context, info) {
@@ -11,7 +12,7 @@ const resolvers: Resolvers = {
         return "Column";
       }
 
-      if("name" in obj && "columns" in obj) {
+      if ("name" in obj && "columns" in obj) {
         return "Board";
       }
 

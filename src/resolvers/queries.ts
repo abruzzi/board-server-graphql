@@ -1,6 +1,15 @@
 import { QueryResolvers } from "__generated__/resolvers-types";
+import { CardResolvers } from "__generated__/resolvers-types";
 
-const queries: QueryResolvers = {
+export const cardResolvers: CardResolvers = {
+  // @ts-ignore
+  comments: async (card, { first, after }, { user, dataSources }) => {
+    if (!user) throw new Error("Not authenticated");
+    return dataSources.boardsAPI.getComments(card.id, first, after);
+  },
+};
+
+export const queryResolvers: QueryResolvers = {
   // @ts-ignore
   currentUser: async (_, __, { user, dataSources }) => {
     if (!user) throw new Error("Not authenticated");
@@ -32,12 +41,6 @@ const queries: QueryResolvers = {
   board: async (_, { id }, { user, dataSources }) => {
     if (!user) throw new Error("Not authenticated");
     return dataSources.boardsAPI.getBoard(id);
-  },
-
-  // @ts-ignore
-  comments: async (_, { cardId, first, after }, { user, dataSources }) => {
-    if (!user) throw new Error("Not authenticated");
-    return dataSources.boardsAPI.getComments(cardId, first, after);
   },
 
   // @ts-ignore
@@ -79,4 +82,3 @@ const queries: QueryResolvers = {
   },
 };
 
-export default queries;
