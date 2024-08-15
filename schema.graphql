@@ -69,9 +69,13 @@ type CommentEdge {
 }
 
 type PageInfo {
+    startCursor: String
     endCursor: String
-    hasNextPage: Boolean!
+    lastCursor: String
+    hasNextPage: Boolean
+    hasPreviousPage: Boolean
 }
+
 
 type Viewer {
     user: User

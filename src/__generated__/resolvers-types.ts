@@ -205,7 +205,10 @@ export type Node = {
 export type PageInfo = {
   __typename?: 'PageInfo';
   endCursor?: Maybe<Scalars['String']>;
-  hasNextPage: Scalars['Boolean'];
+  hasNextPage?: Maybe<Scalars['Boolean']>;
+  hasPreviousPage?: Maybe<Scalars['Boolean']>;
+  lastCursor?: Maybe<Scalars['String']>;
+  startCursor?: Maybe<Scalars['String']>;
 };
 
 export type Query = {
@@ -465,7 +468,10 @@ export type NodeResolvers<ContextType = BoardContext, ParentType extends Resolve
 
 export type PageInfoResolvers<ContextType = BoardContext, ParentType extends ResolversParentTypes['PageInfo'] = ResolversParentTypes['PageInfo']> = ResolversObject<{
   endCursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  hasNextPage?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  hasNextPage?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  hasPreviousPage?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  lastCursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  startCursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
