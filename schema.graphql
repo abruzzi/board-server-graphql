@@ -69,14 +69,14 @@ type PageInfo {
 type Viewer {
     user: User
     boards: [Board!]!
+    board(id: ID!): Board!
     favoriteBoards: [Board]!
     collaborateBoards: [Board]!
 }
 
 type Query {
-    boards: [Board!]!
-    board(id: ID!): Board!
     viewer: Viewer
+    node(id: ID!): Node
 }
 
 type Mutation {

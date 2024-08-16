@@ -184,13 +184,12 @@ export type PageInfo = {
 
 export type Query = {
   __typename?: 'Query';
-  board: Board;
-  boards: Array<Board>;
+  node?: Maybe<Node>;
   viewer?: Maybe<Viewer>;
 };
 
 
-export type QueryBoardArgs = {
+export type QueryNodeArgs = {
   id: Scalars['ID'];
 };
 
@@ -204,10 +203,16 @@ export type User = {
 
 export type Viewer = {
   __typename?: 'Viewer';
+  board: Board;
   boards: Array<Board>;
   collaborateBoards: Array<Maybe<Board>>;
   favoriteBoards: Array<Maybe<Board>>;
   user?: Maybe<User>;
+};
+
+
+export type ViewerBoardArgs = {
+  id: Scalars['ID'];
 };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
@@ -404,8 +409,7 @@ export type PageInfoResolvers<ContextType = BoardContext, ParentType extends Res
 }>;
 
 export type QueryResolvers<ContextType = BoardContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  board?: Resolver<ResolversTypes['Board'], ParentType, ContextType, RequireFields<QueryBoardArgs, 'id'>>;
-  boards?: Resolver<Array<ResolversTypes['Board']>, ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['Node']>, ParentType, ContextType, RequireFields<QueryNodeArgs, 'id'>>;
   viewer?: Resolver<Maybe<ResolversTypes['Viewer']>, ParentType, ContextType>;
 }>;
 
@@ -418,6 +422,7 @@ export type UserResolvers<ContextType = BoardContext, ParentType extends Resolve
 }>;
 
 export type ViewerResolvers<ContextType = BoardContext, ParentType extends ResolversParentTypes['Viewer'] = ResolversParentTypes['Viewer']> = ResolversObject<{
+  board?: Resolver<ResolversTypes['Board'], ParentType, ContextType, RequireFields<ViewerBoardArgs, 'id'>>;
   boards?: Resolver<Array<ResolversTypes['Board']>, ParentType, ContextType>;
   collaborateBoards?: Resolver<Array<Maybe<ResolversTypes['Board']>>, ParentType, ContextType>;
   favoriteBoards?: Resolver<Array<Maybe<ResolversTypes['Board']>>, ParentType, ContextType>;

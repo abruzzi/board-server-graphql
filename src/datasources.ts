@@ -284,6 +284,10 @@ export class BoardsDataSource {
     });
   }
 
+  async getCard(id: string) {
+    return prisma.card.findUnique({ where: { id } });
+  }
+
   async createSimpleCard(columnId: string, title: string): Promise<Column> {
     if (!columnId) {
       throw new Error("Invalid input");

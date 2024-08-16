@@ -29,25 +29,6 @@ export const viewerResolvers: ViewerResolvers = {
   },
 
   // @ts-ignore
-  boards: async (_, __, { user, dataSources }) => {
-    if (!user) throw new Error("Not authenticated");
-    return dataSources.boardsAPI.getBoards(user.id);
-  },
-};
-
-export const queryResolvers: QueryResolvers = {
-  // @ts-ignore
-  viewer: async (_, __, { user, dataSources }) => {
-    if (!user) throw new Error("Not authenticated");
-    if (user.id) {
-      const currentUser = await dataSources.boardsAPI.getUser(user.id);
-      return {
-        user: currentUser,
-      };
-    }
-  },
-
-  // @ts-ignore
   board: async (_, { id }, { user, dataSources }) => {
     if (!user) throw new Error("Not authenticated");
     return dataSources.boardsAPI.getBoard(id);
@@ -57,5 +38,37 @@ export const queryResolvers: QueryResolvers = {
   boards: async (_, __, { user, dataSources }) => {
     if (!user) throw new Error("Not authenticated");
     return dataSources.boardsAPI.getBoards(user.id);
+  },
+};
+
+export const queryResolvers: QueryResolvers = {
+  // @ts-ignore
+  node: async (_, {id}, { user, dataSources }) => {
+    if (!user) throw new Error("Not authenticated");
+
+    const board = await dataSources.boardsAPI.getBoard(id);
+
+    if(board) {
+      return board;
+    }
+
+    const card = await dataSources.boardsAPI.getCard(id);
+
+    if(card) {
+      return card;
+    }
+
+    return null;
+  },
+
+  // @ts-ignore
+  viewer: async (_, __, { user, dataSources }) => {
+    if (!user) throw new Error("Not authenticated");
+    if (user.id) {
+      const currentUser = await dataSources.boardsAPI.getUser(user.id);
+      return {
+        user: currentUser,
+      };
+    }
   },
 };
