@@ -18,9 +18,6 @@ export class BoardsDataSource {
   async getUser(id: string): Promise<User> {
     return prisma.user.findUnique({
       where: { id },
-      include: {
-        favorites: true,
-      },
     });
   }
 
@@ -55,38 +52,6 @@ export class BoardsDataSource {
         hasNextPage: comments.length === first,
       },
     };
-  }
-
-  async createTag(name: string) {
-    const tag = await prisma.tag.findUnique({
-      where: { name },
-    });
-
-    // if there is a same name tag exists
-    if (tag) {
-      return tag;
-    }
-
-    return prisma.tag.create({
-      data: {
-        name,
-      },
-    });
-  }
-
-  async addTagToCard(cardId: string, tagId: string) {
-    await prisma.cardTag.create({
-      data: {
-        cardId,
-        tagId,
-      },
-    });
-
-    return prisma.card.findUnique({ where: { id: cardId } });
-  }
-
-  async getTags(): Promise<Tag[]> {
-    return prisma.tag.findMany();
   }
 
   async findInvitation(token: string) {
@@ -229,18 +194,6 @@ export class BoardsDataSource {
         },
       },
     });
-  }
-
-  async getCard(id: string) {
-    const card = await prisma.card.findUnique({
-      where: { id },
-      include: { tags: { include: { tag: true } } },
-    });
-
-    return {
-      ...card,
-      tags: card.tags.map((tagConnection) => tagConnection.tag),
-    };
   }
 
   async createBoardWithDefaultColumns(name: string, userId: string) {

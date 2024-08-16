@@ -36,12 +36,6 @@ const mutations: MutationResolvers = {
   },
 
   // @ts-ignore
-  addTagToCard: (_, { cardId, tagId }, { user, dataSources }) => {
-    if (!user) throw new Error("Not authenticated");
-    return dataSources.boardsAPI.addTagToCard(cardId, tagId);
-  },
-
-  // @ts-ignore
   removeComment: async (_, { commentId }, { user, dataSources }) => {
     if (!user) throw new Error("Not authenticated");
     return dataSources.boardsAPI.removeComment(commentId);
@@ -84,15 +78,6 @@ const mutations: MutationResolvers = {
     if (!user) throw new Error("Not authenticated");
     return dataSources.boardsAPI.createSimpleCard(columnId, title);
   },
-  // @ts-ignore
-  createColumn: async (
-    _,
-    { boardId, name, position },
-    { user, dataSources }
-  ) => {
-    if (!user) throw new Error("Not authenticated");
-    return dataSources.boardsAPI.createColumn(boardId, name, position);
-  },
 
   // @ts-ignore
   moveCard: async (
@@ -120,12 +105,6 @@ const mutations: MutationResolvers = {
       title,
       description
     );
-  },
-
-  // @ts-ignore
-  createTag: async (_, { name }, { user, dataSources }) => {
-    if (!user) throw new Error("Not authenticated");
-    return dataSources.boardsAPI.createTag(name);
   },
 };
 
