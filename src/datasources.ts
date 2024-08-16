@@ -2,15 +2,12 @@ import {
   Board,
   Card,
   Column,
-  Comment,
   Invitation,
   PrismaClient,
   Tag,
   User,
 } from "@prisma/client";
 import { v4 as uuid } from "uuid";
-import * as console from "console";
-import { CommentConnection } from "./__generated__/resolvers-types";
 
 const prisma = new PrismaClient();
 
@@ -334,15 +331,11 @@ export class BoardsDataSource {
     });
   }
 
-  async signIn(email: string) {
-    let user = await prisma.user.findUnique({ where: { email } });
-    if (!user) {
-      user = await prisma.user.create({ data: { email } });
+  async createSimpleCard(columnId: string, title: string): Promise<Column> {
+    if (!columnId) {
+      throw new Error("Invalid input");
     }
-    return user;
-  }
 
-  async createSimpleCard(columnId: string, title: string): Promise<Card> {
     const largestPositionCard = await prisma.card.findFirst({
       where: {
         columnId: columnId,
@@ -356,19 +349,17 @@ export class BoardsDataSource {
       ? largestPositionCard.position + POSITION_STEP
       : POSITION_STEP;
 
-    if (columnId && title) {
-      return prisma.card.create({
-        data: {
-          columnId,
-          title,
-          description: "",
-          position: position,
-        },
-        include: { column: true },
-      });
-    } else {
-      throw new Error("Invalid input");
-    }
+    await prisma.card.create({
+      data: {
+        columnId,
+        title,
+        description: "",
+        position: position,
+      },
+      include: { column: true },
+    });
+
+    return this.getColumn(columnId);
   }
 
   async createCardFromComment(
@@ -394,7 +385,7 @@ export class BoardsDataSource {
       ? largestPositionCard.position + POSITION_STEP
       : POSITION_STEP;
 
-    return prisma.card.create({
+    await prisma.card.create({
       data: {
         columnId: card.columnId,
         title,
@@ -403,22 +394,21 @@ export class BoardsDataSource {
       },
       include: { column: true },
     });
+
+    return this.getColumn(card.columnId);
   }
 
-  async softDeleteCard(cardId: string): Promise<Card> {
-    return prisma.card.update({
+  async softDeleteCard(cardId: string): Promise<Column> {
+    const card = await prisma.card.update({
       where: { id: cardId },
       data: {
         deleted: true,
         deletedAt: new Date(),
       },
+      include: { column: true },
     });
-  }
 
-  async deleteCard(cardId: string): Promise<Card> {
-    return prisma.card.delete({
-      where: { id: cardId },
-    });
+    return this.getColumn(card.columnId);
   }
 
   async addCommentToCard(cardId: string, content: string, userId: string) {
@@ -493,6 +483,13 @@ export class BoardsDataSource {
     targetColumnId: string,
     targetPosition: number
   ) {
+    const column = await prisma.column.findUnique({
+      where: { id: targetColumnId },
+    });
+    if (!column) {
+      throw new Error(`column ${targetColumnId} doesn't exist`);
+    }
+
     // when moving, we're pretty sure there is already a card otherwise the moveCard should not be called.
     if (targetPosition === 0) {
       // try to insert to the top
@@ -508,7 +505,7 @@ export class BoardsDataSource {
 
       // when move into an empty column, there isn't any cards in the column yet
       if (!smallestPositionCard) {
-        return prisma.card.update({
+        await prisma.card.update({
           where: {
             id: cardId,
           },
@@ -517,10 +514,12 @@ export class BoardsDataSource {
             position: POSITION_STEP,
           },
         });
+
+        return this.getBoard(column.boardId);
       }
 
       if (smallestPositionCard.position >= INCREASE_STEP) {
-        return prisma.card.update({
+        await prisma.card.update({
           where: { id: cardId },
           data: {
             columnId: targetColumnId,
@@ -528,10 +527,12 @@ export class BoardsDataSource {
             position: smallestPositionCard.position - INCREASE_STEP,
           },
         });
+
+        return this.getBoard(column.boardId);
       } else {
         // now we need to re-balance the column
         await this.rebalancePositions(targetColumnId);
-        return prisma.card.findUnique({ where: { id: cardId } });
+        return this.getBoard(column.boardId);
       }
     } else if (targetPosition === -1) {
       // insert to the bottom
@@ -544,7 +545,7 @@ export class BoardsDataSource {
         },
       });
 
-      return prisma.card.update({
+      await prisma.card.update({
         where: { id: cardId },
         data: {
           columnId: targetColumnId,
@@ -552,6 +553,8 @@ export class BoardsDataSource {
           position: largestPositionCard.position + INCREASE_STEP,
         },
       });
+
+      return this.getBoard(column.boardId);
     } else {
       // now we're in between somewhere
       const cards = await prisma.card.findMany({
@@ -584,7 +587,7 @@ export class BoardsDataSource {
         await this.rebalancePositions(targetColumnId);
       }
 
-      return prisma.card.findUnique({ where: { id: cardId } });
+      return this.getBoard(column.boardId);
     }
   }
 }
