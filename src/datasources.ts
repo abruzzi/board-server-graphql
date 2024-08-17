@@ -112,6 +112,10 @@ export class BoardsDataSource {
       },
     });
 
+    if(!board) {
+      return null;
+    }
+
     // Transform the data to match GraphQL schema expectations
     return {
       ...board,

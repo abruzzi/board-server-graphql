@@ -43,18 +43,18 @@ export const viewerResolvers: ViewerResolvers = {
 
 export const queryResolvers: QueryResolvers = {
   // @ts-ignore
-  node: async (_, {id}, { user, dataSources }) => {
+  node: async (_, { id }, { user, dataSources }) => {
     if (!user) throw new Error("Not authenticated");
 
     const board = await dataSources.boardsAPI.getBoard(id);
 
-    if(board) {
+    if (board) {
       return board;
     }
-
+    
     const card = await dataSources.boardsAPI.getCard(id);
 
-    if(card) {
+    if (card) {
       return card;
     }
 
