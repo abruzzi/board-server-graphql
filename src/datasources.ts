@@ -373,13 +373,31 @@ export class BoardsDataSource {
   }
 
   async addCommentToCard(cardId: string, content: string, userId: string) {
-    return prisma.comment.create({
-      data: {
-        content,
-        card: { connect: { id: cardId } },
-        user: { connect: { id: userId } },
-      },
-    });
+    const newComment = await prisma.comment.create({
+        data: {
+          content,
+          card: { connect: { id: cardId } },
+          user: { connect: { id: userId } },
+        },
+        include: {
+          user: true,
+          card: true,
+        },
+      });
+
+      const cursor = Buffer.from(newComment.createdAt.toISOString()).toString('base64');
+
+      const response = {
+        commentEdge: {
+          node: newComment,
+          cursor,
+        },
+        card: {
+          id: cardId,
+        },
+      };
+
+      return response;
   }
 
   async removeComment(commentId: string) {

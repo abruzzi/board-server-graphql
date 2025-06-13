@@ -5,3 +5,5 @@ node_modules
 dist/
 .DS_Store
 token-refresh.js
+dev.db
+prisma/migrations/

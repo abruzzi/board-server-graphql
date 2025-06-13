@@ -15,6 +15,12 @@ export type Scalars = {
   Float: number;
 };
 
+export type AddCommentToCardPayload = {
+  __typename?: 'AddCommentToCardPayload';
+  card: Card;
+  commentEdge: CommentEdge;
+};
+
 export type Board = Node & {
   __typename?: 'Board';
   collaborators: Array<User>;
@@ -78,7 +84,7 @@ export type CommentEdge = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  addCommentToCard: Comment;
+  addCommentToCard: AddCommentToCardPayload;
   createBoard: Board;
   createCardFromComment: Column;
   createSimpleCard: Column;
@@ -285,6 +291,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
+  AddCommentToCardPayload: ResolverTypeWrapper<AddCommentToCardPayload>;
   Board: ResolverTypeWrapper<Board>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Card: ResolverTypeWrapper<Card>;
@@ -305,6 +312,7 @@ export type ResolversTypes = ResolversObject<{
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
+  AddCommentToCardPayload: AddCommentToCardPayload;
   Board: Board;
   Boolean: Scalars['Boolean'];
   Card: Card;
@@ -321,6 +329,12 @@ export type ResolversParentTypes = ResolversObject<{
   String: Scalars['String'];
   User: User;
   Viewer: Viewer;
+}>;
+
+export type AddCommentToCardPayloadResolvers<ContextType = BoardContext, ParentType extends ResolversParentTypes['AddCommentToCardPayload'] = ResolversParentTypes['AddCommentToCardPayload']> = ResolversObject<{
+  card?: Resolver<ResolversTypes['Card'], ParentType, ContextType>;
+  commentEdge?: Resolver<ResolversTypes['CommentEdge'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type BoardResolvers<ContextType = BoardContext, ParentType extends ResolversParentTypes['Board'] = ResolversParentTypes['Board']> = ResolversObject<{
@@ -379,7 +393,7 @@ export type CommentEdgeResolvers<ContextType = BoardContext, ParentType extends 
 }>;
 
 export type MutationResolvers<ContextType = BoardContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
-  addCommentToCard?: Resolver<ResolversTypes['Comment'], ParentType, ContextType, RequireFields<MutationAddCommentToCardArgs, 'cardId' | 'content'>>;
+  addCommentToCard?: Resolver<ResolversTypes['AddCommentToCardPayload'], ParentType, ContextType, RequireFields<MutationAddCommentToCardArgs, 'cardId' | 'content'>>;
   createBoard?: Resolver<ResolversTypes['Board'], ParentType, ContextType, RequireFields<MutationCreateBoardArgs, 'name'>>;
   createCardFromComment?: Resolver<ResolversTypes['Column'], ParentType, ContextType, RequireFields<MutationCreateCardFromCommentArgs, 'cardId' | 'description' | 'title'>>;
   createSimpleCard?: Resolver<ResolversTypes['Column'], ParentType, ContextType, RequireFields<MutationCreateSimpleCardArgs, 'columnId' | 'title'>>;
@@ -431,6 +445,7 @@ export type ViewerResolvers<ContextType = BoardContext, ParentType extends Resol
 }>;
 
 export type Resolvers<ContextType = BoardContext> = ResolversObject<{
+  AddCommentToCardPayload?: AddCommentToCardPayloadResolvers<ContextType>;
   Board?: BoardResolvers<ContextType>;
   Card?: CardResolvers<ContextType>;
   Column?: ColumnResolvers<ContextType>;

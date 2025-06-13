@@ -31,7 +31,7 @@ const oauth2Client = new OAuth2Client(
 );
 
 const corsOptions = {
-  origin: "https://fellow-olive.vercel.app", // Frontend origin
+  origin: "http://localhost:5173", // Frontend origin
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
@@ -59,7 +59,12 @@ async function startServer() {
         const authHeader = req.headers.authorization || "";
         const token = authHeader.split(" ")[1];
 
-        const user = getUser(token);
+        const user = process.env.NODE_ENV === 'development' ? 
+          {
+              id: "user-local",
+              name: "Juntao Qiu",
+              email: "juntao.qiu@gmail.com"
+          } : getUser(token)
 
         return {
           user,
