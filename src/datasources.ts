@@ -385,12 +385,10 @@ export class BoardsDataSource {
         },
       });
 
-      const cursor = Buffer.from(newComment.createdAt.toISOString()).toString('base64');
-
       const response = {
         commentEdge: {
           node: newComment,
-          cursor,
+          cursor: newComment.id,
         },
         card: {
           id: cardId,
