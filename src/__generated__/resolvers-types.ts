@@ -199,6 +199,16 @@ export type QueryNodeArgs = {
   id: Scalars['ID'];
 };
 
+export type Subscription = {
+  __typename?: 'Subscription';
+  cardUpdated: Board;
+};
+
+
+export type SubscriptionCardUpdatedArgs = {
+  boardId: Scalars['ID'];
+};
+
 export type User = {
   __typename?: 'User';
   avatarUrl?: Maybe<Scalars['String']>;
@@ -306,6 +316,7 @@ export type ResolversTypes = ResolversObject<{
   PageInfo: ResolverTypeWrapper<PageInfo>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']>;
+  Subscription: ResolverTypeWrapper<{}>;
   User: ResolverTypeWrapper<User>;
   Viewer: ResolverTypeWrapper<Viewer>;
 }>;
@@ -327,6 +338,7 @@ export type ResolversParentTypes = ResolversObject<{
   PageInfo: PageInfo;
   Query: {};
   String: Scalars['String'];
+  Subscription: {};
   User: User;
   Viewer: Viewer;
 }>;
@@ -427,6 +439,10 @@ export type QueryResolvers<ContextType = BoardContext, ParentType extends Resolv
   viewer?: Resolver<Maybe<ResolversTypes['Viewer']>, ParentType, ContextType>;
 }>;
 
+export type SubscriptionResolvers<ContextType = BoardContext, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = ResolversObject<{
+  cardUpdated?: SubscriptionResolver<ResolversTypes['Board'], "cardUpdated", ParentType, ContextType, RequireFields<SubscriptionCardUpdatedArgs, 'boardId'>>;
+}>;
+
 export type UserResolvers<ContextType = BoardContext, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = ResolversObject<{
   avatarUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -456,6 +472,7 @@ export type Resolvers<ContextType = BoardContext> = ResolversObject<{
   Node?: NodeResolvers<ContextType>;
   PageInfo?: PageInfoResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  Subscription?: SubscriptionResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
   Viewer?: ViewerResolvers<ContextType>;
 }>;

@@ -1,6 +1,7 @@
-import { MutationResolvers } from "__generated__/resolvers-types";
+import { MutationResolvers } from "../__generated__/resolvers-types";
+import {pubsub} from "../pubsub";
 
-const mutations: MutationResolvers = {
+const mutationResolvers: MutationResolvers = {
   // @ts-ignore
   createBoard: async (_, { name }, { user, dataSources }) => {
     if (!user) throw new Error("Not authenticated");
@@ -86,11 +87,18 @@ const mutations: MutationResolvers = {
     { user, dataSources }
   ) => {
     if (!user) throw new Error("Not authenticated");
-    return dataSources.boardsAPI.moveCard(
+
+    const updatedBoard = await dataSources.boardsAPI.moveCard(
       cardId,
       targetColumnId,
       targetPosition
     );
+
+    pubsub.publish(`CARD-MOVED-ON-BOARD-${updatedBoard.id}`, {
+      cardUpdated: updatedBoard,
+    });
+
+    return updatedBoard;
   },
 
   // @ts-ignore
@@ -108,4 +116,4 @@ const mutations: MutationResolvers = {
   },
 };
 
-export default mutations;
+export { mutationResolvers };

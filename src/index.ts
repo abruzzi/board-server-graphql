@@ -13,6 +13,9 @@ import { OAuth2Client } from "google-auth-library";
 import { getUser, User } from "./get-user.js";
 import jwt from "jsonwebtoken";
 import { sendInvitationEmail } from "./sendInvitationEmail.js";
+import { WebSocketServer } from "ws";
+import { makeExecutableSchema } from "@graphql-tools/schema";
+import { useServer } from "graphql-ws/lib/use/ws";
 
 const typeDefs = readFileSync("./schema.graphql", { encoding: "utf-8" });
 
@@ -41,10 +44,46 @@ async function startServer() {
   const app = express();
   const httpServer = http.createServer(app);
 
-  const server = new ApolloServer<BoardContext>({
-    typeDefs,
-    resolvers,
+  const schema = makeExecutableSchema({ typeDefs, resolvers });
+
+  // WebSocket server
+  const wsServer = new WebSocketServer({
+    server: httpServer,
+    path: "/graphql",
   });
+
+  // Enable subscriptions
+  useServer(
+    {
+      schema,
+      context: async (ctx) => {
+        const authHeader = ctx.connectionParams?.authorization as
+          | string
+          | undefined;
+        const token = authHeader?.split(" ")[1];
+
+        const user =
+          process.env.NODE_ENV === "development"
+            ? {
+                id: "user-local",
+                name: "Juntao Qiu",
+                email: "juntao.qiu@gmail.com",
+              }
+            : getUser(token);
+
+        return {
+          user,
+          dataSources: {
+            boardsAPI: boardsAPI,
+          },
+        };
+      },
+    },
+
+    wsServer
+  );
+
+  const server = new ApolloServer<BoardContext>({ schema });
 
   await server.start();
 
@@ -59,12 +98,14 @@ async function startServer() {
         const authHeader = req.headers.authorization || "";
         const token = authHeader.split(" ")[1];
 
-        const user = process.env.NODE_ENV === 'development' ? 
-          {
-              id: "user-local",
-              name: "Juntao Qiu",
-              email: "juntao.qiu@gmail.com"
-          } : getUser(token)
+        const user =
+          process.env.NODE_ENV === "development"
+            ? {
+                id: "user-local",
+                name: "Juntao Qiu",
+                email: "juntao.qiu@gmail.com",
+              }
+            : getUser(token);
 
         return {
           user,

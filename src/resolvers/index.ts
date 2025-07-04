@@ -1,12 +1,14 @@
 import { Resolvers } from "../__generated__/resolvers-types";
 import { cardResolvers, queryResolvers, viewerResolvers } from "./queries.js";
-import Mutation from "./mutations.js";
+import { mutationResolvers } from "./mutations.js";
+import {subscriptionResolvers} from "./subscriptions.js";
 
 const resolvers: Resolvers = {
+  Subscription: subscriptionResolvers,
   Query: queryResolvers,
   Card: cardResolvers,
   Viewer: viewerResolvers,
-  Mutation,
+  Mutation: mutationResolvers,
   Node: {
     __resolveType(obj, context, info) {
       if ("name" in obj && "columns" in obj) {

@@ -1,5 +1,8 @@
-import { QueryResolvers, ViewerResolvers } from "__generated__/resolvers-types";
-import { CardResolvers } from "__generated__/resolvers-types";
+import {
+  QueryResolvers,
+  ViewerResolvers,
+  CardResolvers,
+} from "../__generated__/resolvers-types";
 
 export const cardResolvers: CardResolvers = {
   // @ts-ignore
@@ -51,7 +54,7 @@ export const queryResolvers: QueryResolvers = {
     if (board) {
       return board;
     }
-    
+
     const card = await dataSources.boardsAPI.getCard(id);
 
     if (card) {
